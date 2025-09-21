@@ -28,6 +28,5 @@ class UserCreate(UserBase):
 
 class User(UserBase):
     id_user: str
-    rol: str
     created_at: datetime
     updated_at: datetime
