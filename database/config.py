@@ -7,6 +7,7 @@ from dotenv import load_dotenv
 from sqlalchemy import create_engine, engine, false
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+import models
 
 
 load_dotenv('./config/.env')
@@ -27,7 +28,6 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base = declarative_base()
 
-
 def get_db():
     """
     Generador de sesiones de base de datos
@@ -39,7 +39,7 @@ def get_db():
         db.close()
 
 
-def create_table():
+def create_tables():
     """
     Crear todas las tablas definidas en los
     """

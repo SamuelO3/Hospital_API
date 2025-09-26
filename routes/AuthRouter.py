@@ -4,6 +4,7 @@ from models.user import User
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from database.config import get_db, SessionLocal
 from schemas.user_schema import UserCreate, User, UserBase
+from models.user import User
 from auth.security import get_hashed_password, verify_password
 from datetime import timedelta
 
@@ -31,8 +32,13 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: SessionLoc
 async def register(user: UserCreate, db: SessionLocal = Depends(get_db)):
     if db.query(User).filter(User.email == user.email).first():
         raise HTTPException(status_code=400, detail='Email already registered')
-    user.password = get_hashed_password(user.password)
-    db.add(user)
+
+    db_user = User(
+        username=user.username,
+        email=user.email,
+        password=get_hashed_password(user.password)
+    )        
+    db.add(db_user)
     db.commit()
     return {"message": "User registered successfully"}
 

@@ -4,7 +4,7 @@ from database.config import Base
 
 from sqlalchemy import Column, ForeignKey, String, DateTime, Date
 from sqlalchemy.sql import func
-from sqlalchemy.orm import Relationship, relationship
+from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import UUID
 
 
@@ -20,7 +20,7 @@ class Patient(Base):
     id_information = Column(
         UUID(as_uuid=True), ForeignKey("User_Information.id_user_information")
     )
-    patient_information = Relationship("UserInformation", back_populates="patient")
+    patient_information = relationship("UserInformation", back_populates="patient")
 
     # ID auditorias
     id_user_create = Column(

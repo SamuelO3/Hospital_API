@@ -27,7 +27,7 @@ class UserInformation(Base):
     birth_date_user = Column(Date, nullable=False)
     gender_user = Column(String(50), nullable=False)
     phone_number_user = Column(String(20), nullable=False)
-    document_number_user = Column(String(30), Nullable=False)
+    document_number_user = Column(String(30), nullable=False)
 
     rol_user = Column(String(60), nullable=False)
 

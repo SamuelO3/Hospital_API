@@ -26,4 +26,4 @@ class User(Base):
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
 
     # Relacion para navegar entre User y User_Information en ambas direcciones.
-    user_information = relationship("UserInformation", back_populates="user")
+    user_information = relationship("UserInformation", back_populates="user", foreign_keys="UserInformation.user_id", )

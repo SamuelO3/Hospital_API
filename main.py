@@ -2,6 +2,9 @@ from fastapi import FastAPI
 from routes import AuthRouter
 from database.config import engine, Base, get_db
 from fastapi.middleware.cors import CORSMiddleware
+from database.config import create_tables
+
+create_tables()
 
 
 app = FastAPI()
@@ -14,8 +17,6 @@ cors = CORSMiddleware(
     allow_headers=["*"],
 )
 
-
-Base.metadata.create_all(bind=engine)
 
 app.include_router(AuthRouter.router)
 
