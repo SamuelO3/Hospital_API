@@ -4,7 +4,7 @@ Configuracion de la base de datos PostgreSQL con Neon
 
 import os
 from dotenv import load_dotenv
-from sqlalchemy import create_engine, engine, false
+from sqlalchemy import create_engine, engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 import models
@@ -19,18 +19,18 @@ if not DATABASE_URL:
 
 engine = create_engine(
     DATABASE_URL,
-    echo=False,
     pool_pre_ping=True,
     pool_recycle=300,
-    connect_args={"sslmode": "require"},
+    echo=False,
 )
+
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base = declarative_base()
 
 def get_db():
     """
-    Generador de sesiones de base de datos
+    Dependency to get database session.
     """
     db = SessionLocal()
     try:
@@ -40,7 +40,10 @@ def get_db():
 
 
 def create_tables():
-    """
-    Crear todas las tablas definidas en los
-    """
+    """Create all tables."""
     Base.metadata.create_all(bind=engine)
+
+
+def drop_tables():
+    """Drop all tables (use with caution)."""
+    Base.metadata.drop_all(bind=engine)
