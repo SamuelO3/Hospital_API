@@ -5,7 +5,7 @@ Modulo de seguridad para manejo de contraseñas
 import bcrypt
 
 
-def get_hashed_password(password: str) -> str:
+def get_password_hash(password: str) -> str:
     """
     Genera un hash seguro de una contraseña
 
