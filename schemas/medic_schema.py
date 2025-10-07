@@ -4,10 +4,12 @@ from pydantic import BaseModel
 from typing import Optional
 
 
-class PatientBase(BaseModel):
+class MedicBase(BaseModel):
     """
-    Schema de paciente con informacion base
+    Schema de medico con informacino base
     """
+
+    speciality: str
 
     first_name_user: str
     second_name_user: Optional[str]
@@ -20,31 +22,31 @@ class PatientBase(BaseModel):
     rol_user: str
 
 
-class PatietnCreate(PatientBase):
+class MedicCreate(MedicBase):
     """
-    Schema de paciente para crear un nuevo paciente
+    Schema de medico para crear nuevo medico
     """
 
     pass
 
 
-class PatientResponse(PatientBase):
+class MedicResponse(MedicBase):
     """
-    Schema para respuesta de paciente
+    Schema de medico response
     """
 
     update_date: Optional[datetime] = None
     id_user_update: Optional[UUID] = None
-    creation_date: datetime
     id_user_create: UUID
+    creation_date: datetime
 
 
-class Patient(PatientBase):
+class Medic(MedicBase):
     """
-    Schema con toda la informacion de basica de paciente
+    Schema de medico con informacino basica de medico
     """
 
-    id_patient: UUID
+    id_hospital_worker: UUID
 
     class Config:
         orm_mode = True

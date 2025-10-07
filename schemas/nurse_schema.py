@@ -1,13 +1,16 @@
 from datetime import date, datetime
+from typing import Optional
 from uuid import UUID
 from pydantic import BaseModel
-from typing import Optional
 
 
-class PatientBase(BaseModel):
+class NurseBase(BaseModel):
     """
-    Schema de paciente con informacion base
+    Schema de enfermera con informacion base
     """
+
+    speciality: str
+    salary: str
 
     first_name_user: str
     second_name_user: Optional[str]
@@ -20,17 +23,17 @@ class PatientBase(BaseModel):
     rol_user: str
 
 
-class PatietnCreate(PatientBase):
+class NurseCreate(NurseBase):
     """
-    Schema de paciente para crear un nuevo paciente
+    Schema de enfermera para crear una nueva enfermera
     """
 
     pass
 
 
-class PatientResponse(PatientBase):
+class NurseResponse(NurseBase):
     """
-    Schema para respuesta de paciente
+    Schema de enfermera response
     """
 
     update_date: Optional[datetime] = None
@@ -39,12 +42,12 @@ class PatientResponse(PatientBase):
     id_user_create: UUID
 
 
-class Patient(PatientBase):
+class Nurse(NurseBase):
     """
-    Schema con toda la informacion de basica de paciente
+    Schema de enfermera con informacino basica de enfermera
     """
 
-    id_patient: UUID
+    id_nurse: UUID
 
     class Config:
         orm_mode = True
