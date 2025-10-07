@@ -3,6 +3,8 @@ from uuid import UUID
 from pydantic import BaseModel
 from datetime import datetime
 
+#! Posiblemente este schema no tenga ningun uso
+
 
 class UserInformationBase(BaseModel):
     first_name_user: str
@@ -16,12 +18,18 @@ class UserInformationBase(BaseModel):
 
 
 class UserInformationCreate(UserInformationBase):
-    rol_user: str
-    id_user_creation: UUID
+    pass
 
 
 class UserInformationUpdate(UserInformationBase):
+    pass
+
+
+class UserInformationResponse(UserInformationBase):
+    id_user_creation: UUID
     id_user_update: Optional[UUID] = None
+    creation_date: datetime
+    update_date: Optional[datetime] = None
 
 
 class UserInformation(UserInformationBase):

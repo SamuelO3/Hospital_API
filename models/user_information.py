@@ -32,10 +32,10 @@ class UserInformation(Base):
     user_id = Column(UUID(as_uuid=True), ForeignKey("User.id_user"))
 
     # Relaciones para back_populates
-    medic = relationship("Medic", back_populates="medic")
+    medic = relationship("Medic", back_populates="medic_information")
     patient = relationship("Patient", back_populates="patient_information")
     nurse = relationship("Nurse", back_populates="nurse_information")
-    user = relationship("User", back_populates="user_information", foreign_keys=[user_id])
+    user = relationship("User", back_populates="user_information")
 
     # Columnas Auditorias
     creation_date = Column(DateTime(timezone=True), server_default=func.now())

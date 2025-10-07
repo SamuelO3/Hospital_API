@@ -8,6 +8,7 @@ from uuid import UUID, uuid4
 
 from sqlalchemy.orm import Session
 
+
 from auth.JWTHandler import create_access_token
 from auth.security import get_password_hash, verify_password
 from models.user import User
@@ -43,6 +44,7 @@ def create_user(db: Session, user: UserCreate):
     db.commit()
     db.refresh(db_user)
     return db_user
+
 
 def autheticate_user(db: Session, email: str, plain_password: str):
     """
