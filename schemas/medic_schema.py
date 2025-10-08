@@ -40,6 +40,9 @@ class MedicResponse(MedicBase):
     id_user_create: UUID
     creation_date: datetime
 
+    class Config:
+        from_attributes = True
+
 
 class Medic(MedicBase):
     """
@@ -47,6 +50,3 @@ class Medic(MedicBase):
     """
 
     id_hospital_worker: UUID
-
-    class Config:
-        orm_mode = True

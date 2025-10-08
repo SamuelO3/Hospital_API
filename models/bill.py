@@ -17,19 +17,22 @@ class Bill(Base):
 
     generation_date = Column(Date, nullable=False)
     generation_hour = Column(Time, nullable=False)
-    total = Column(Float(10, 2), nullable=False)
+    total = Column(Float(precision=10), nullable=False)
 
-    # columnas con IDs de relaciones.
-    id_patient = Column(UUID(as_uuid=True), ForeignKey("Patient.id_patient"))
+    id_patient = Column(
+        UUID(as_uuid=True), ForeignKey("Patient.id_patient"), nullable=False
+    )
     id_medical_appointment = Column(
-        UUID(as_uuid=True), ForeignKey("Medical_Appointment.id_medical_appointment")
+        UUID(as_uuid=True),
+        ForeignKey("Medical_Appointment.id_medical_appointment"),
+        unique=True,
+        nullable=False,
     )
 
     # Relaciones
-    patient = relationship("Patient", back_populates="bill")
-    medical_appointment = relationship("Medical_Appointment", back_populates="bill")
+    medical_appointment = relationship("MedicalAppointment", back_populates="bill")
 
-    # Columnas Auditorias
+    # Auditoría
     creation_date = Column(DateTime(timezone=True), server_default=func.now())
     update_date = Column(DateTime(timezone=True), onupdate=func.now())
     id_user_create = Column(

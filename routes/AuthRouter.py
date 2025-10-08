@@ -6,14 +6,13 @@ from auth.JWTHandler import (
     decode_access_token,
     ACCES_TOKEN_EXPIRES_TIME,
 )
-from auth.security import get_hashed_password, verify_password
 from controllers.auth_controller import create_user, autheticate_user, create_token_user
-from schemas.auth_schema import LoginRequest, UserCreate, UserResponse, LoginResponse
-from schemas.user_schema import UserBase
+from schemas.user_schema import UserCreate, UserResponse
+from schemas.auth_schema import LoginRequest, LoginResponse
 
 from models.user import User
 from database.config import get_db, SessionLocal
-from schemas.user_schema import UserCreate, User, UserBase
+from schemas.user_schema import UserCreate, User
 
 from datetime import timedelta
 
@@ -26,11 +25,6 @@ def get_user(mail: str, db: SessionLocal = Depends(get_db)):
     if not user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Not Found")
     return user
-
-
-@router.get("/me")
-async def read_users_me(current_user: User = Depends(get_current_active_user)):
-    return current_user
 
 
 @router.post("/login")
