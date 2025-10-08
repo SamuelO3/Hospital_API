@@ -4,9 +4,9 @@ from uuid import UUID, uuid4
 
 from sqlalchemy.orm import Session
 
-from auth.JWTHandler import create_access_token, get_password_hash, verify_password
+from auth.security import get_password_hash
 from models.user import User
-from schemas.auth_schema import LoginRequest, UserCreate, UserResponse
+from schemas.user_schema import UserCreate
 
 
 def create_user(db: Session, user: UserCreate):
