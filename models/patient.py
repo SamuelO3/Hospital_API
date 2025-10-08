@@ -19,6 +19,7 @@ class Patient(Base):
     id_information = Column(
         UUID(as_uuid=True), ForeignKey("User_Information.id_user_information")
     )
+    patient_information = relationship("UserInformation", back_populates="patient")
 
     # relaciones
     bill = relationship("Bill", back_populates="patient")

@@ -8,10 +8,42 @@ from uuid import UUID, uuid4
 
 from sqlalchemy.orm import Session
 
-from auth.JWTHandler import create_access_token, get_password_hash, verify_password
+
+from auth.JWTHandler import create_access_token
+from auth.security import get_password_hash, verify_password
 from models.user import User
 from controllers.user_controller import get_user_by_email
-from schemas.auth_schema import LoginRequest, UserCreate, UserResponse
+from schemas.user_schema import UserCreate, UserResponse
+
+
+def create_user(db: Session, user: UserCreate):
+    """
+    Crea un nuevo usuario.
+
+    Args:
+        db: Sesión de base de datos
+        user: Datos del usuario a crear
+
+    Returns:
+        Usuario: Usuario creado
+    """
+    exists_user = get_user_by_email(db, user.email)
+    if exists_user:
+        raise HTTPException(status_code=400, detail="User already exists")
+
+    hashed_password = get_password_hash(user.password)
+    db_user = User(
+        id_user = uuid4(),
+        username=user.username,
+        email=user.email,
+        password=hashed_password,
+        rol_user=user.rol_user,
+        active=user.active,
+    )
+    db.add(db_user)
+    db.commit()
+    db.refresh(db_user)
+    return db_user
 
 
 def autheticate_user(db: Session, email: str, plain_password: str):
