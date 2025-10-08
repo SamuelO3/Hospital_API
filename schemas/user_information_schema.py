@@ -31,9 +31,9 @@ class UserInformationResponse(UserInformationBase):
     creation_date: datetime
     update_date: Optional[datetime] = None
 
+    class Config:
+        from_attributes = True
+
 
 class UserInformation(UserInformationBase):
     id_user_information: UUID
-
-    class Config:
-        orm_mode = True

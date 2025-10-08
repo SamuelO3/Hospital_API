@@ -7,10 +7,9 @@ from dotenv import load_dotenv
 from sqlalchemy import create_engine, engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-import models
 
 
-load_dotenv("./config/.env")
+load_dotenv(".env")
 
 DATABASE_URL = os.getenv("DATABASE_URL")
 

@@ -31,6 +31,9 @@ class DiagnosisResponse(DiagnosisBase):
     id_user_create: UUID
     creation_date: datetime
 
+    class config:
+        from_attributes = True
+
 
 class Diagnosis(DiagnosisBase):
     """
@@ -38,6 +41,3 @@ class Diagnosis(DiagnosisBase):
     """
 
     id_diagnosis: UUID
-
-    class config:
-        orm_mode = True

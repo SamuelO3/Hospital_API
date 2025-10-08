@@ -20,6 +20,9 @@ class LoginResponse(BaseModel):
     token_type: str = "bearer"
     user: UserResponse
 
+    class config:
+        from_attributes: True
+
 
 class TokenData(BaseModel):
     username: Optional[str] = None

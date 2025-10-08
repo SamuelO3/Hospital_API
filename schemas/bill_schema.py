@@ -32,6 +32,9 @@ class BillRespone(BillBase):
     creation_date: datetime
     id_user_create: UUID
 
+    class config:
+        from_attributes = True
+
 
 class Bill(BillBase):
     """
@@ -39,6 +42,3 @@ class Bill(BillBase):
     """
 
     id_bill: UUID
-
-    class config:
-        orm_mode = True

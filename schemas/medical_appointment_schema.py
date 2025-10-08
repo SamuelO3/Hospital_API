@@ -32,6 +32,9 @@ class MedicalAppointmentResponse(MedicalAppointmentBase):
     creation_date: datetime
     id_user_create: UUID
 
+    class config:
+        from_attributes = True
+
 
 class MedicalAppointment(MedicalAppointmentBase):
     """
@@ -39,6 +42,3 @@ class MedicalAppointment(MedicalAppointmentBase):
     """
 
     id_medical_appointment: UUID
-
-    class config:
-        orm_mode = True

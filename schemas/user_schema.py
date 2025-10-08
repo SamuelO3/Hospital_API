@@ -29,13 +29,13 @@ class UserUpdate(BaseModel):
 
 class User(UserBase):
     id_user: UUID
-
-    class Config:
-        orm_mode = True
+    activo: bool = True
 
 
 class UserResponse(UserBase):
     id_usuario: UUID
     fecha_creacion: Optional[datetime] = None
     fecha_actualizacion: Optional[datetime] = None
-    activo: bool = True
+
+    class Config:
+        from_attributes = True

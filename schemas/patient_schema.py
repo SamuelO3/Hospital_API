@@ -38,6 +38,9 @@ class PatientResponse(PatientBase):
     creation_date: datetime
     id_user_create: UUID
 
+    class Config:
+        from_attributes = True
+
 
 class Patient(PatientBase):
     """
@@ -45,6 +48,3 @@ class Patient(PatientBase):
     """
 
     id_patient: UUID
-
-    class Config:
-        orm_mode = True

@@ -8,10 +8,10 @@ from uuid import UUID, uuid4
 from fastapi import Depends
 from sqlalchemy.orm import Session
 
-from auth.JWTHandler import create_access_token, get_password_hash, verify_password
+from auth.security import get_password_hash, verify_password
 from models.user import User
-from routes.AuthRouter import oauth2_scheme
-from schemas.auth_schema import LoginRequest, UserCreate, UserResponse
+from schemas.user_schema import UserCreate
+from schemas.auth_schema import LoginRequest, UserResponse
 
 
 def create_user(db: Session, user: UserCreate):
@@ -99,9 +99,7 @@ def get_user_by_id(db: Session, id_user: str):
     return db.query(User).filter(User.id_user == id_user).first()
 
 
-def update_user(
-    db: Session, id_user: str, update_info: User, token: str = Depends(oauth2_scheme)
-):
+def update_user(db: Session, id_user: str, update_info: User):
     """
     Actualiza un usuario buscado por su id
 

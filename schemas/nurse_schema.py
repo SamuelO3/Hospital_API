@@ -41,6 +41,9 @@ class NurseResponse(NurseBase):
     creation_date: datetime
     id_user_create: UUID
 
+    class Config:
+        from_attributes = True
+
 
 class Nurse(NurseBase):
     """
@@ -48,6 +51,3 @@ class Nurse(NurseBase):
     """
 
     id_nurse: UUID
-
-    class Config:
-        orm_mode = True
