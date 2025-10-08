@@ -18,9 +18,17 @@ class UserCreate(UserBase):
     password: str
 
 
+class UserUpdate(BaseModel):
+    username: Optional[str]
+    email: Optional[EmailStr]
+    rol_user: Optional[str]
+    password: Optional[str]
+    activo: Optional[bool] = True
+    updated_at: Optional[datetime] = None
+
+
 class User(UserBase):
     id_user: UUID
-    updated_at: Optional[datetime] = None
 
     class Config:
         orm_mode = True

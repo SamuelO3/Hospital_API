@@ -2,10 +2,9 @@
 Controlador de autenticacion para el manejo de tabla User
 """
 
-from datetime import datetime
-from typing import Optional
 from uuid import UUID, uuid4
 
+from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
 
@@ -13,7 +12,7 @@ from auth.JWTHandler import create_access_token
 from auth.security import get_password_hash, verify_password
 from models.user import User
 from controllers.user_controller import get_user_by_email
-from schemas.user_schema import UserCreate, UserResponse
+from schemas.user_schema import UserCreate
 
 
 def create_user(db: Session, user: UserCreate):
@@ -33,7 +32,7 @@ def create_user(db: Session, user: UserCreate):
 
     hashed_password = get_password_hash(user.password)
     db_user = User(
-        id_user = uuid4(),
+        id_user=uuid4(),
         username=user.username,
         email=user.email,
         password=hashed_password,

@@ -10,7 +10,7 @@ from sqlalchemy.orm import sessionmaker
 import models
 
 
-load_dotenv('./config/.env')
+load_dotenv("./config/.env")
 
 DATABASE_URL = os.getenv("DATABASE_URL")
 
@@ -27,6 +27,7 @@ engine = create_engine(
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base = declarative_base()
+
 
 def get_db():
     """
