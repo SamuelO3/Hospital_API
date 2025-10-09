@@ -10,7 +10,6 @@ from .diagnosis import Diagnosis
 __all__ = [
     "User",
     "UserInformation",
-    "HospitalWorker",
     "Patient",
     "Medic",
     "Nurse",
