@@ -33,7 +33,7 @@ class User(UserBase):
 
 
 class UserResponse(UserBase):
-    id_usuario: UUID
+    id_user: UUID
     fecha_creacion: Optional[datetime] = None
     fecha_actualizacion: Optional[datetime] = None
 

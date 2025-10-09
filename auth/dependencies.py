@@ -30,4 +30,6 @@ def get_current_user(token: str = Depends(oAuth2)):
             )
         return user
     except Exception as e:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=str(e))
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Token inválido o expirado.",
+        headers={"WWW-Authenticate": "Bearer"})

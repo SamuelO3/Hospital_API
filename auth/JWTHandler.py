@@ -12,8 +12,8 @@ from dotenv import load_dotenv
 load_dotenv("./config/.env")
 
 SECRET_KEY = os.getenv("SECRET_KEY")
-ALGORITHM = os.getenv("ALGOTIHM")
-ACCES_TOKEN_EXPIRES_TIME = os.getenv("ACCES_TOKEN_EXPIRES_TIME")
+ALGORITHM = os.getenv("ALGOTIHM", "HS256")
+ACCES_TOKEN_EXPIRES_TIME = int(os.getenv("ACCES_TOKEN_EXPIRES_TIME"))
 
 
 def create_access_token(data: dict, expires_delta: timedelta = None):
@@ -52,7 +52,15 @@ def decode_access_token(token: str):
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         return payload
-    except jwt.ExpiredSignatureError:
-        raise Exception("Token has expired")
-    except jwt.InvalidTokenError:
-        raise Exception("Invalid Token")
+    except ExpiredSignatureError:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="El token ha expirado.",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    except JWTError:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Token inválido o falsificado.",
+            headers={"WWW-Authenticate": "Bearer"},
+        )

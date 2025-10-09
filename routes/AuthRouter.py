@@ -6,6 +6,7 @@ from auth.JWTHandler import (
     decode_access_token,
     ACCES_TOKEN_EXPIRES_TIME,
 )
+from auth.security import verify_password, get_password_hash
 from controllers.auth_controller import create_user, autheticate_user, create_token_user
 from schemas.user_schema import UserCreate, UserResponse
 from schemas.auth_schema import LoginRequest, LoginResponse
@@ -37,7 +38,7 @@ async def login(login: LoginRequest, db: SessionLocal = Depends(get_db)):
                 detail="Invalid credentials",
                 headers={"WWW-Authenticate": "Bearer"},
             )
-        access_token_expires = timedelta(minutes=ACCES_TOKEN_EXPIRES_TIME)
+        # access_token_expires = timedelta(minutes=ACCES_TOKEN_EXPIRES_TIME)
         access_token = create_token_user(user)
         return LoginResponse(
             access_token=access_token,
