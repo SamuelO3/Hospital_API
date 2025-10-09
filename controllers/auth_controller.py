@@ -62,12 +62,12 @@ def autheticate_user(db: Session, email: str, plain_password: str):
 
     if not user:
         return None
-    if not verify_password(plain_password, User.password):
+    if not verify_password(plain_password, user.password):
         return None
-    if not User.active:
+    if not user.active:
         return None
 
-    return User
+    return user
 
 
 def create_token_user(user: User):
