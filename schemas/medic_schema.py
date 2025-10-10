@@ -9,17 +9,22 @@ class MedicBase(BaseModel):
     Schema de medico con informacino base
     """
 
-    speciality: str
+    specialty: str
+    id_user_information: UUID
 
-    first_name_user: str
-    second_name_user: Optional[str]
-    first_last_name_user: str
-    second_last_name_user: Optional[str]
-    birth_date_user: date
-    gender: str
-    phone_number: str
-    document_number: str
-    rol_user: str
+    class Config:
+        orm_mode = True
+    # speciality: str
+
+    # first_name_user: str
+    # second_name_user: Optional[str]
+    # first_last_name_user: str
+    # second_last_name_user: Optional[str]
+    # birth_date_user: date
+    # gender: str
+    # phone_number: str
+    # document_number: str
+    # rol_user: str
 
 
 class MedicCreate(MedicBase):
