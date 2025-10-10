@@ -1,31 +1,23 @@
+from typing import Union
 from fastapi import APIRouter, HTTPException, Depends, status
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from fastapi.responses import JSONResponse
+from fastapi.security import OAuth2PasswordBearer
+from controllers.user_information_controller import create_user_information
 
-from auth.JWTHandler import (
-    create_access_token,
-    decode_access_token,
-    ACCES_TOKEN_EXPIRES_TIME,
-)
-from auth.security import verify_password, get_password_hash
+from database.config import get_db, SessionLocal
+
 from controllers.auth_controller import create_user, autheticate_user, create_token_user
-from schemas.user_schema import UserCreate, UserResponse
+
+from schemas.user_information_schema import (
+    UserInformationCreate,
+    UserInformationResponse,
+)
+from schemas.user_schema import UserCreate, UserResponse, UserCreate
 from schemas.auth_schema import LoginRequest, LoginResponse
 
-from models.user import User
-from database.config import get_db, SessionLocal
-from schemas.user_schema import UserCreate, User
-
-from datetime import timedelta
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
-
-
-def get_user(mail: str, db: SessionLocal = Depends(get_db)):
-    user = db.query(User).filter(User.email == mail).first()
-    if not user:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Not Found")
-    return user
 
 
 @router.post("/login")
@@ -65,11 +57,19 @@ async def login(login: LoginRequest, db: SessionLocal = Depends(get_db)):
 
 
 @router.post("/register")
-async def register(user: UserCreate, db: SessionLocal = Depends(get_db)):
+async def register(
+    user: UserCreate,
+    user_information: UserInformationCreate,
+    db: SessionLocal = Depends(get_db),
+) -> JSONResponse:
 
     try:
         db_user = create_user(db, user)
-        return UserResponse.from_orm(db_user)
+        user_information.id_user = db_user.id_user
+        db_user_information = create_user_information(db, user_information)
+
+        return UserResponse.from_orm(db_user), db_user_information
+
     except HTTPException as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
     # if db.query(User).filter(User.email == user.email).first():

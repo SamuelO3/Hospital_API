@@ -2,20 +2,21 @@
 Controlador de autenticacion para el manejo de tabla User
 """
 
-from uuid import UUID, uuid4
+from uuid import uuid4
 
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
-
 from auth.JWTHandler import create_access_token
 from auth.security import get_password_hash, verify_password
-from models.user import User
+
 from controllers.user_controller import get_user_by_email
-from schemas.user_schema import UserCreate
+
+from models.user import User
+from schemas.user_schema import UserCreate as UserCreateSchema
 
 
-def create_user(db: Session, user: UserCreate):
+def create_user(db: Session, user: UserCreateSchema):
     """
     Crea un nuevo usuario.
 

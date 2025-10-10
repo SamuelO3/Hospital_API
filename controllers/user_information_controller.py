@@ -1,8 +1,6 @@
 from uuid import uuid4
 from fastapi import Depends
-from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session, session
-from auth.JWTHandler import verify_token
 
 from models.user_information import UserInformation
 from schemas.user_information_schema import UserInformation as Information_schema
@@ -35,7 +33,7 @@ def create_user_information(
     if exist_information:
         raise ValueError("Este documento ya se encuentra registrado")
 
-    db_user_information = Information_schema(
+    db_user_information = UserInformation(
         id_user_information=uuid4(),
         first_name_user=information.first_name_user,
         second_name_user=information.second_name_user,
