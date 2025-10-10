@@ -5,7 +5,7 @@ Modulo de seguridad para manejo de contraseñas
 import bcrypt
 
 
-def get_hashed_password(password: str) -> str:
+def get_password_hash(password: str) -> str:
     """
     Genera un hash seguro de una contraseña
 
@@ -35,7 +35,7 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
         True si la contraseña es correcta, False si la contraseña es incorrecta.
     """
     result = bcrypt.checkpw(
-        password=plain_password.encode("uft-8"),
+        password=plain_password.encode("utf-8"),
         hashed_password=hashed_password.encode("utf-8"),
     )
     return result

@@ -9,14 +9,14 @@ from datetime import datetime, timedelta, timezone
 import os
 from dotenv import load_dotenv
 
-load_dotenv("./.env")
+load_dotenv("./config/.env")
 
 SECRET_KEY = os.getenv("SECRET_KEY")
-ALGORITHM = os.getenv("ALGOTIHM")
-ACCES_TOKEN_EXPIRES_TIME = os.getenv("ACCES_TOKEN_EXPIRES_TIME")
+ALGORITHM = os.getenv("ALGOTIHM", "HS256")
+ACCES_TOKEN_EXPIRES_TIME = int(os.getenv("ACCES_TOKEN_EXPIRES_TIME"))
 
 
-def crate_access_token(data: dict, expires_delta: timedelta = None):
+def create_access_token(data: dict, expires_delta: timedelta = None):
     """
     Crea un token seguro para el JWT
 
@@ -52,5 +52,15 @@ def decode_access_token(token: str):
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         return payload
-    except JWTError as e:
-        raise Exception(f"Token invalido o expirado: {e}")
+    except ExpiredSignatureError:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="El token ha expirado.",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    except JWTError:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Token inválido o falsificado.",
+            headers={"WWW-Authenticate": "Bearer"},
+        )

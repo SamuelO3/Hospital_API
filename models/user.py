@@ -1,23 +1,28 @@
 import uuid
-
-from database.config import Base
-from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey
+from datetime import datetime
+from sqlalchemy import Boolean, Column, String, DateTime
 from sqlalchemy.orm import relationship
-from sqlalchemy.sql import func
 from sqlalchemy.dialects.postgresql import UUID
+from database.config import Base
 
 
 class User(Base):
-    __tablename__ = "users"
+    __tablename__ = "User"
 
     id_user = Column(
         UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, index=True
     )
-    username = Column(String(100), nullable=False, unique=True)
-    password = Column(String(255), nullable=False)
-    email = Column(String(100), nullable=False, unique=True)
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
-    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
 
-    def __repr__(self):
-        return f"<User(id_User={self.id_user}, username='{self.username}')>"
+    username = Column(String(100), unique=True, nullable=False)
+    password = Column(String(255), nullable=False)
+    email = Column(String(100), unique=True, nullable=False)
+    rol_user = Column(String(60), nullable=False)
+    active = Column(Boolean, nullable=False)
+
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, onupdate=datetime.utcnow)
+
+    # Relación con UserInformation
+    user_information = relationship(
+        "UserInformation", back_populates="user", uselist=False
+    )

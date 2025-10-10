@@ -1,32 +1,41 @@
-from pydantic import BaseModel, EmailStr, Field, field_validator
+from typing import Optional
+from uuid import UUID
+from pydantic import BaseModel, EmailStr
 from datetime import datetime
-import re
+
+"""
+    Schemas de User
+"""
 
 
 class UserBase(BaseModel):
-    username: str = Field(..., min_length=4)
+    username: str
     email: EmailStr
+    rol_user: str
 
 
 class UserCreate(UserBase):
     password: str
 
-    @field_validator("password")
-    def password_validator(cls, v):
-        """
-        Valida que la contraseña tenga al menos una mayúscula, un número
-        y mínimo 8 caracteres.
-        """
-        # Al menos una mayúscula, al menos un número, mínimo 8 caracteres en total
-        pattern = r"^(?=.*[A-Z])(?=.*\d).{8,}$"
-        if not re.match(pattern, v):
-            raise ValueError(
-                "La contraseña debe tener minimo una mayuscula y un numero"
-            )
-        return v
+
+class UserUpdate(BaseModel):
+    username: Optional[str]
+    email: Optional[EmailStr]
+    rol_user: Optional[str]
+    password: Optional[str]
+    activo: Optional[bool] = True
+    updated_at: Optional[datetime] = None
 
 
 class User(UserBase):
-    id_user: str
-    created_at: datetime
-    updated_at: datetime
+    id_user: UUID
+    activo: bool = True
+
+
+class UserResponse(UserBase):
+    id_user: UUID
+    fecha_creacion: Optional[datetime] = None
+    fecha_actualizacion: Optional[datetime] = None
+
+    class Config:
+        from_attributes = True
