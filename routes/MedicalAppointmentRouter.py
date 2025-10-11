@@ -37,3 +37,5 @@ def update_medic(mpp_id: str, Mac: mac, db: Session = Depends(get_db)):
 @router.delete("/{mpp_id}", dependencies=[Depends(require_role("admin"))], status_code=status.HTTP_200_OK)
 def delete_medic(mpp_id: str, db: Session = Depends(get_db)):
     return delete_medical_appointmentC(db, mpp_id)
+
+
