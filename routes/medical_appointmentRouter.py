@@ -55,9 +55,9 @@ def get_all_medical_appointments_route(
 
 @router.put("/{id_medical_appointment}", dependencies=[Depends(require_role(["admin", "medic"]))])
 def update_medical_appointment_route(
-    id_medical_appointment: UUID, 
-    medical_appointment: MedicalAppointment_schema,
-    db: Session = Depends(get_db)
+    id_medical_appointment: UUID,
+    medical_appointment: MedicalAppointmentCreate,
+    db: Session = Depends(get_db),
 ):
     """
     Actualiza una cita médica en la base de datos.
