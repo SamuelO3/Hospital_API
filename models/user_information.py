@@ -24,13 +24,13 @@ class UserInformation(Base):
 
     id_user = Column(
         UUID(as_uuid=True),
-        ForeignKey("User.id_user"),
+        ForeignKey("User.id_user", ondelete="CASCADE"),
         nullable=False,
         unique=True,  # si es 1 a 1
     )
 
     # Relaciones
-    medic = relationship("Medic", back_populates="medic_information", uselist=False)
+    medic = relationship("Medic", back_populates="medic_information", uselist=False, cascade="all, delete-orphan", passive_deletes=True,)
     patient = relationship(
         "Patient", back_populates="patient_information", uselist=False
     )

@@ -24,5 +24,5 @@ class User(Base):
 
     # Relación con UserInformation
     user_information = relationship(
-        "UserInformation", back_populates="user", uselist=False
+        "UserInformation", back_populates="user", uselist=False, cascade="all, delete-orphan", passive_deletes=True,
     )

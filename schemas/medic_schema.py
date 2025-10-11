@@ -41,8 +41,9 @@ class MedicResponse(MedicBase):
     """
 
     update_date: Optional[datetime] = None
-    id_user_update: Optional[UUID] = None
-    id_user_create: UUID
+    id_medic: UUID
+    # id_user_update: Optional[UUID] = None
+    # id_user_create: UUID
     creation_date: datetime
 
     class Config:

@@ -3,10 +3,13 @@ from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 from fastapi import HTTPException, status
 from models.medic import Medic
-from schemas.medic_schema import Medic as Medic_schema
+from schemas.medic_schema import Medic as Medic_schema, MedicResponse
+from models.user_information import UserInformation
+from models.user import User
+
 
 """
-    Metodos para crear, leer, actualizar y eliminar user_information
+    Metodos para crear, leer, actualizar y eliminar medic
 """
 
 
@@ -31,7 +34,7 @@ def create_medic(db: Session, medic: Medic_schema):
     db.commit()
     db.refresh(new_medic)
 
-    return new_medic
+    return MedicResponse.model_validate(new_medic)
 
 
 def get_medic_by_id(db: Session, medic_id: UUID):
@@ -47,7 +50,7 @@ def get_medic_by_id(db: Session, medic_id: UUID):
     """
     medic = db.query(Medic).filter(Medic.id_medic == medic_id).first()
     if medic:
-        return medic
+        return MedicResponse.from_orm(medic)
     else:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Medic with id '{medic_id}' not found")
 
@@ -64,7 +67,7 @@ def get_medics(db: Session):
     """
     medicos = db.query(Medic).all()
     if medicos:
-        return medicos
+        return [MedicResponse.from_orm(medic) for medic in medicos]
     else:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No se encontraron medicos")
 
@@ -81,14 +84,14 @@ def update_medic(db: Session, medic_id: UUID, medic: Medic_schema):
     return:
         medic: medico actualizado en la db
     """
-    medic_to_update = get_medic_by_id(db, medic_id)
+    medic_to_update = db.query(Medic).filter(Medic.id_medic == medic_id).first()
     if medic_to_update:
         try:
             medic_to_update.specialty = medic.specialty
             medic_to_update.id_user_information = medic.id_user_information
             db.commit()
             db.refresh(medic_to_update)
-            return medic_to_update
+            return MedicResponse.model_validate(medic_to_update)
         except Exception as e:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
     else:
@@ -106,13 +109,14 @@ def delete_medic(db: Session, medic_id: UUID):
     return:
         medic: medico eliminado de la db
     """
-    medic_to_delete = get_medic_by_id(db, medic_id)
+    medic_to_delete = db.query(Medic).filter(Medic.id_medic == medic_id).first()
     if medic_to_delete:
         try:
             db.delete(medic_to_delete)
             db.commit()
-            return medic_to_delete
+            return MedicResponse.model_validate(medic_to_delete)
         except Exception as e:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
     else:
-        raise 
+        raise HTTPException(status_code=404, detail="Médico no encontrado.")
+    

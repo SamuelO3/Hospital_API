@@ -17,12 +17,12 @@ class Medic(Base):
 
     id_user_information = Column(
         UUID(as_uuid=True),
-        ForeignKey("User_Information.id_user_information"),
+        ForeignKey("User_Information.id_user_information", ondelete="CASCADE"),
         nullable=False,
     )
 
     # Relación
-    medic_information = relationship("UserInformation", back_populates="medic")
+    medic_information = relationship("UserInformation", back_populates="medic", passive_deletes=True)
     appointments = relationship("MedicalAppointment", back_populates="medic")
 
     # Auditoría
