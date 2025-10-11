@@ -4,8 +4,30 @@ from database.config import get_db, create_tables
 from fastapi.middleware.cors import CORSMiddleware
 
 
-app = FastAPI()
-create_tables()
+app = FastAPI(
+    title="Sistema de Gestión Médica",
+    description="API para la gestion hospitalaria.",
+    version="1.2.0",
+    openapi_tags=[
+        {
+            "name": "Patient",
+            "description": "Operaciones relacionadas con el manejo de pacientes.",
+        },
+        {"name": "Medics", "description": "Gestión de información de médicos."},
+        {"name": "Nurses", "description": "Gestion de información de enfermeras."},
+        {
+            "name": "Medical appointment",
+            "description": "Agendamiento y consulta de citas médicas.",
+        },
+        {
+            "name": "Diagnosis",
+            "description": "Registro y consulta de diagnósticos médicos.",
+        },
+        {"name": "Bill", "description": "Gestión de facturación y pagos."},
+        {"name": "Auth", "description": "Gestión de login y registro."},
+    ],
+)
+
 
 cors = CORSMiddleware(
     app,
