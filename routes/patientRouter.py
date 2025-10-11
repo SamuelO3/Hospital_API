@@ -19,7 +19,7 @@ from controllers.patient_controller import (
 router = APIRouter(prefix="/patient", tags=["Patient"])
 
 
-@router.post("/", dependencies=[Depends(require_role("user"))])
+@router.post("/", dependencies=[Depends(require_role(["user", "admin"]))])
 def create_patient(patient: PatientCreate, db: Session = Depends(get_db)):
 
     try:
@@ -47,7 +47,7 @@ def get_patients(skip: int = 0, limit: int = 15, db: Session = Depends(get_db)):
     return db_patients
 
 
-@router.get("/{id_patient}", dependencies=[Depends(require_role("user"))])
+@router.get("/{id_patient}", dependencies=[Depends(require_role(["user", "medic"]))])
 def get_patient(id_patient: str, db: Session = Depends(get_db)):
 
     try:
@@ -59,7 +59,10 @@ def get_patient(id_patient: str, db: Session = Depends(get_db)):
     return db_patient
 
 
-@router.put("/update/{id_patient}", dependencies=[Depends(require_role("user"))])
+@router.put(
+    "/update/{id_patient}",
+    dependencies=[Depends(require_role["user", "admin", "medic"])],
+)
 def update_patient(
     id_patient: str, update_info: PatientUpdate, db: Session = Depends(get_db)
 ):
@@ -74,7 +77,7 @@ def update_patient(
 
 @router.delete(
     "/delete/{id_patient}",
-    dependencies=[Depends(require_role("user"))],
+    dependencies=[Depends(require_role(["user", "admin"]))],
 )
 def delete_patient(id_patient: str, db: Session = Depends(get_db)):
 

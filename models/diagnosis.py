@@ -18,7 +18,11 @@ class Diagnosis(Base):
 
     # Relación
     appointment = relationship(
-        "MedicalAppointment", back_populates="diagnosis", uselist=False
+        "MedicalAppointment",
+        back_populates="diagnosis",
+        uselist=False,
+        cascade="all, delete-orphan",
+        passive_deletes=True,
     )
 
     # Campos auditoría

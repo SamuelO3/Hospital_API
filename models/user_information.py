@@ -1,3 +1,4 @@
+from datetime import datetime
 import uuid
 from sqlalchemy import Column, String, Date, DateTime, ForeignKey
 from sqlalchemy.sql import func
@@ -24,20 +25,36 @@ class UserInformation(Base):
 
     id_user = Column(
         UUID(as_uuid=True),
-        ForeignKey("User.id_user"),
+        ForeignKey("User.id_user", ondelete="CASCADE"),
         nullable=False,
-        unique=True,  # si es 1 a 1
+        unique=True,
     )
 
     # Relaciones
-    medic = relationship("Medic", back_populates="medic_information", uselist=False)
-    patient = relationship(
-        "Patient", back_populates="patient_information", uselist=False
+    medic = relationship(
+        "Medic",
+        back_populates="medic_information",
+        uselist=False,
+        cascade="all, delete-orphan",
+        passive_deletes=True,
     )
-    nurse = relationship("Nurse", back_populates="nurse_information", uselist=False)
+    patient = relationship(
+        "Patient",
+        back_populates="patient_information",
+        uselist=False,
+        cascade="all, delete-orphan",
+        passive_deletes=True,
+    )
+    nurse = relationship(
+        "Nurse",
+        back_populates="nurse_information",
+        uselist=False,
+        cascade="all, delete-orphan",
+        passive_deletes=True,
+    )
 
     # dentro de UserInformation
-    user = relationship("User", back_populates="user_information")
+    user = relationship("User", back_populates="user_information", passive_deletes=True)
 
     # 🔹 Auditoría
     creation_date = Column(DateTime(timezone=True), server_default=func.now())
