@@ -64,7 +64,7 @@ def get_all_medical_appointments_route(db: Session = Depends(get_db)):
 )
 def update_medical_appointment_route(
     id_medical_appointment: UUID,
-    medical_appointment: MedicalAppointment_schema,
+    medical_appointment: MedicalAppointmentCreate,
     db: Session = Depends(get_db),
 ):
     """
