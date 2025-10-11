@@ -10,10 +10,17 @@ class DiagnosisBase(BaseModel):
     """
 
     diagnosis_description: str
-    diagnosis_date: datetime
 
 
 class DiagnosisCreate(DiagnosisBase):
+    """
+    Schema de diagnostico para crear un nuevo diagnostico
+    """
+
+    diagnosis_date: datetime
+
+
+class DiagnosisUpdate(DiagnosisBase):
     """
     Schema de diagnostico para crear un nuevo diagnostico
     """

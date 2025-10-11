@@ -28,9 +28,5 @@ class Diagnosis(Base):
     # Campos auditoría
     creation_date = Column(DateTime(timezone=True), server_default=func.now())
     update_date = Column(DateTime(timezone=True), onupdate=func.now())
-    id_user_create = Column(
-        UUID(as_uuid=True), ForeignKey("User.id_user"), nullable=False
-    )
-    id_user_update = Column(
-        UUID(as_uuid=True), ForeignKey("User.id_user"), nullable=True
-    )
+    id_user_create = Column(UUID(as_uuid=True), ForeignKey("User.id_user"), index=True)
+    id_user_update = Column(UUID(as_uuid=True), ForeignKey("User.id_user"), index=True)
