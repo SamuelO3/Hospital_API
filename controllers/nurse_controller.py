@@ -1,11 +1,12 @@
 from uuid import uuid4, UUID
-from fastapi import Depends
+from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 
 from models.nurse import Nurse as Nurse_model
 from schemas.nurse_schema import Nurse as NurseCreate
 from schemas.nurse_schema import NurseUpdate
+from schemas.nurse_schema import NurseBase
 
 """
     Metodos para crear, leer, actualizar y eliminar user_information
@@ -36,34 +37,42 @@ def create_nurse(db: Session, nurse: NurseCreate):
     return new_nurse
 
 
-def get_nurse_by_id(db: Session, nurse_id: UUID):
+def get_nurse_by_id(db: Session, nurse_id: str):
     """
-    Obtiene un medico por su id.
+    Obtiene un enfermera por su id.
 
     Args
         db:Sesion de la base de datos
-        medic_id: id del medico
+        nurse_id: id del enfermera
 
     return:
-        medic: medico encontrado en la db
+        nurse: enfermera encontrado en la db
     """
-    return db.query(Nurse_model).filter(Nurse_model.id_nurse == nurse_id).first()
+    nurse = db.query(Nurse_model).filter(Nurse_model.id_nurse ==  nurse_id).first()
+    if nurse:
+        return nurse
+    else:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Nurse with id '{nurse_id}' not found")
 
 
-def get_nurse(db: Session, skip: int = 0, limit: int = 15):
+def get_nurse(db: Session):
     """
-    Obtiene todos los medicos en la base de datos.
+    Obtiene todos los enfermeras en la base de datos.
 
     Args
         db:Sesion de la base de datos
 
     return:
-        medicos: lista de medicos en la db
+        enfermeras: lista de enfermeras en la db
     """
-    return db.query(Nurse_model).offset(skip).limit(limit).all()
+    nurses = db.query(Nurse_model).all()
+    if nurses:
+        return nurses
+    else:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No se encontraron enfermeras")
 
 
-def delete_nurse(db: Session, nurse_id: UUID):
+def delete_nurse(db: Session, nurse_id: str):
     """
     Elimina una enfermera de la base de datos por su ID.
 
@@ -74,18 +83,30 @@ def delete_nurse(db: Session, nurse_id: UUID):
     Returns:
         dict: mensaje de confirmación o error
     """
-    nurse = db.query(Nurse_model).filter(Nurse_model.id_nurse == nurse_id).first()
+    nurse_to_delete = get_nurse_by_id(db, nurse_id)
+    if nurse_to_delete:
+        
+        try:
+            user_info = nurse_to_delete.nurse_information  
+            db.delete(nurse_to_delete)
+            if user_info:
+                user = user_info.user
+                if user:
+                    db.delete(user_info)
+                    db.delete(user)
+                else:
+                    db.delete(user_info)
+                
+            
+            db.commit()
+            return nurse_to_delete
+        except Exception as e:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+    else:
+        raise 
 
-    if not nurse:
-        return {"error": "La enfermera no existe."}
 
-    db.delete(nurse)
-    db.commit()
-
-    return {"message": "Enfermera eliminada correctamente."}
-
-
-def update_nurse(db: Session, nurse_id: UUID, payload: NurseUpdate):
+def update_nurse(db: Session, nurse_id: str, nurse: NurseCreate):
     """
     Actualiza una enfermera por su ID.
 
@@ -97,19 +118,15 @@ def update_nurse(db: Session, nurse_id: UUID, payload: NurseUpdate):
     Returns:
         dict: mensaje y/o datos actualizados
     """
-    nurse = db.query(Nurse_model).filter(Nurse_model.id_nurse == nurse_id).first()
-    if not nurse:
-        return {"error": "La enfermera no existe."}
-
-    data = payload.dict(exclude_unset=True)
-
-    if "speciality" in data:
-        nurse.speciality = data["speciality"]
-    if "id_user_information" in data:
-        nurse.id_user_information = data["id_user_information"]
-
-    db.add(nurse)
-    db.commit()
-    db.refresh(nurse)
-
-    return {"message": "Enfermera actualizada correctamente.", "nurse": nurse}
+    nurse_to_update = get_nurse_by_id(db, nurse_id)
+    if nurse_to_update:
+        try:
+            nurse_to_update.speciality = nurse.speciality
+            nurse_to_update.id_user_information = nurse.id_user_information
+            db.commit()
+            db.refresh(nurse_to_update)
+            return nurse_to_update
+        except Exception as e:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+    else:
+        raise

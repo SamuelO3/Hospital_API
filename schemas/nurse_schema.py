@@ -56,9 +56,9 @@ class Nurse(NurseBase):
 
     id_nurse: UUID
 
-class NurseUpdate(BaseModel):
-    speciality: Optional[str] = None
-    id_user_information: Optional[UUID] = None
+# class NurseUpdate(BaseModel):
+#     speciality: Optional[str] = None
+#     id_user_information: Optional[UUID] = None
 
 
 class NurseUpdate(BaseModel):
