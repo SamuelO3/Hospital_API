@@ -1,0 +1,36 @@
+"""
+Dependencias necesarias para el uso del modulo de manejo de token de JWT
+"""
+
+from fastapi import Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordBearer
+from .JWTHandler import decode_access_token
+
+oAuth2 = OAuth2PasswordBearer(tokenUrl="Login")
+
+
+def get_current_user(token: str = Depends(oAuth2)):
+    """
+    Obtiene el usuario que esta loggeado actualmente
+
+    Args:
+        token:
+    Return:
+        user: usuario activo
+    Raise:
+        excepcion si el usuario no esta autorizado
+
+    """
+    try:
+        payload = decode_access_token(token)
+        user = payload.get("sub")
+        role = payload.get("rol_user")
+        if user is None:
+            raise
+        return {"email": user, "role_user": role}
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Token inválido o expirado.",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
