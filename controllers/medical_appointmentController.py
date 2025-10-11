@@ -34,6 +34,7 @@ def create_medical_appointment(db: Session, medical_appointment: MedicalAppointm
         db.add(new_appointment)
         db.commit()
         db.refresh(new_appointment)
+        return new_appointment
 
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
@@ -145,8 +146,16 @@ def delete_medical_appointment(db: Session, appointment_id: UUID):
     
     if appointment_to_delete:
         try:
-            db.delete(appointment_to_delete)
-            db.commit()
+            
+            diagnosis = appointment_to_delete.diagnosis
+            if diagnosis:
+                db.delete(diagnosis)
+                db.delete(appointment_to_delete)
+            else:
+                db.delete(appointment_to_delete)
+
+
+            db.commit() 
             return appointment_to_delete
         except Exception as e:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
