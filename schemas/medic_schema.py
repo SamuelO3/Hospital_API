@@ -55,3 +55,4 @@ class Medic(MedicBase):
     """
 
     id_medic: UUID
+

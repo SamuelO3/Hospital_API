@@ -108,6 +108,7 @@ def delete_medic(db: Session, medic_id: UUID):
     """
     medic_to_delete = get_medic_by_id(db, medic_id)
     if medic_to_delete:
+        
         try:
             db.delete(medic_to_delete)
             db.commit()
