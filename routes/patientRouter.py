@@ -25,10 +25,9 @@ def create_patient(patient: PatientCreate, db: Session = Depends(get_db)):
     try:
         db_patient = create_patient_controller(db, patient)
 
+        return db_patient
     except HTTPException as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
-
-    return db_patient
 
 
 @router.get(
@@ -41,10 +40,9 @@ def get_patients(skip: int = 0, limit: int = 15, db: Session = Depends(get_db)):
     try:
         db_patients = get_all_patient(db, limit=limit, skip=skip)
 
+        return db_patients
     except HTTPException as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
-
-    return db_patients
 
 
 @router.get("/{id_patient}", dependencies=[Depends(require_role(["user", "medic"]))])
@@ -53,15 +51,14 @@ def get_patient(id_patient: str, db: Session = Depends(get_db)):
     try:
         db_patient = get_patient_by_id(db, id_patient)
 
+        return db_patient
     except HTTPException as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
-
-    return db_patient
 
 
 @router.put(
     "/update/{id_patient}",
-    dependencies=[Depends(require_role["user", "admin", "medic"])],
+    dependencies=[Depends(require_role(["user", "admin", "medic"]))],
 )
 def update_patient(
     id_patient: str, update_info: PatientUpdate, db: Session = Depends(get_db)
@@ -69,10 +66,9 @@ def update_patient(
     try:
         db_patient = update_patient_controller(id_patient, update_info, db)
 
+        return db_patient
     except HTTPException as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
-
-    return db_patient
 
 
 @router.delete(
@@ -84,7 +80,8 @@ def delete_patient(id_patient: str, db: Session = Depends(get_db)):
     try:
         response = delete_patient_controller(id_patient, db)
 
+        return JSONResponse(
+            content={"Response": response}, status_code=status.HTTP_200_OK
+        )
     except HTTPException as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
-
-    return JSONResponse(content={"Response": response})
