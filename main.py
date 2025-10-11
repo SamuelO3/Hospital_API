@@ -13,8 +13,8 @@ app = FastAPI(
             "name": "Patient",
             "description": "Operaciones relacionadas con el manejo de pacientes.",
         },
-        {"name": "Medic", "description": "Gestión de información de médicos."},
-        {"name": "Nurse", "description": "Gestion de información de enfermeras."},
+        {"name": "Medics", "description": "Gestión de información de médicos."},
+        {"name": "Nurses", "description": "Gestion de información de enfermeras."},
         {
             "name": "Medical appointment",
             "description": "Agendamiento y consulta de citas médicas.",
@@ -24,6 +24,7 @@ app = FastAPI(
             "description": "Registro y consulta de diagnósticos médicos.",
         },
         {"name": "Bill", "description": "Gestión de facturación y pagos."},
+        {"name": "Auth", "description": "Gestión de login y registro."},
     ],
 )
 
