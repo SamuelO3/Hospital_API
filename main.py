@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from routes import AuthRouter, MedicRouter
+from routes import AuthRouter, MedicRouter, NurseRouter
 from database.config import engine, Base, get_db
 from fastapi.middleware.cors import CORSMiddleware
 from database.config import create_tables
@@ -20,4 +20,5 @@ cors = CORSMiddleware(
 
 app.include_router(AuthRouter.router)
 app.include_router(MedicRouter.router)
+app.include_router(NurseRouter.router)
 get_db()
