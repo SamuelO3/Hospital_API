@@ -54,4 +54,4 @@ class Medic(MedicBase):
     Schema de medico con informacino basica de medico
     """
 
-    id_hospital_worker: UUID
+    id_medic: UUID

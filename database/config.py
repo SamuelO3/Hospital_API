@@ -9,7 +9,8 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
 
-load_dotenv(".env")
+# load_dotenv(".env")
+load_dotenv('./config/.env')
 
 DATABASE_URL = os.getenv("DATABASE_URL")
 

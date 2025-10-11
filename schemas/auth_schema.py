@@ -11,7 +11,7 @@ from schemas.user_schema import UserResponse
 
 
 class LoginRequest(BaseModel):
-    username: str
+    email: str
     password: str
 
 

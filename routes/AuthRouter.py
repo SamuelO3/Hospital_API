@@ -23,7 +23,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
 @router.post("/login")
 async def login(login: LoginRequest, db: SessionLocal = Depends(get_db)):
     try:
-        user = autheticate_user(db, login.username, login.password)
+        user = autheticate_user(db, login.email, login.password)
         if not user:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
