@@ -69,10 +69,13 @@ def update_diagnosis(
 )
 def delete_diagnosis(id_diagnosis: str, db: Session = Depends(get_db)):
     try:
-        result = delete_diagnosis_controller(id_diagnosis, db)
+        response = delete_diagnosis_controller(id_diagnosis, db)
+
+        if not response:
+            ValueError("Algo salio mal")
 
         return JSONResponse(
-            content={"Response": result}, status_code=status.HTTP_200_OK
+            content={"Response": response}, status_code=status.HTTP_200_OK
         )
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=e)

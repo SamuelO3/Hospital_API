@@ -16,7 +16,7 @@ from controllers.patient_controller import (
 )
 
 
-router = APIRouter(prefix="/patient", tags=["Patient"])
+router = APIRouter(prefix="/patient", tags=["Patients"])
 
 
 @router.post("/", dependencies=[Depends(require_role(["user", "admin"]))])
@@ -45,7 +45,9 @@ def get_patients(skip: int = 0, limit: int = 15, db: Session = Depends(get_db)):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
 
 
-@router.get("/{id_patient}", dependencies=[Depends(require_role(["user", "medic"]))])
+@router.get(
+    "/{id_patient}", dependencies=[Depends(require_role(["user", "medic", "admin"]))]
+)
 def get_patient(id_patient: str, db: Session = Depends(get_db)):
 
     try:
@@ -79,6 +81,9 @@ def delete_patient(id_patient: str, db: Session = Depends(get_db)):
 
     try:
         response = delete_patient_controller(id_patient, db)
+
+        if not response:
+            ValueError("Algo salio mal")
 
         return JSONResponse(
             content={"Response": response}, status_code=status.HTTP_200_OK

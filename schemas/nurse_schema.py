@@ -14,6 +14,8 @@ class NurseBase(BaseModel):
 
     class Config:
         orm_mode = True
+
+
     # first_name_user: str
     # second_name_user: Optional[str]
     # first_last_name_user: str
@@ -53,6 +55,13 @@ class Nurse(NurseBase):
     """
 
     id_nurse: UUID
+
 class NurseUpdate(BaseModel):
     speciality: Optional[str] = None
     id_user_information: Optional[UUID] = None
+
+
+class NurseUpdate(BaseModel):
+    speciality: Optional[str] = None
+    id_user_information: Optional[UUID] = None
+

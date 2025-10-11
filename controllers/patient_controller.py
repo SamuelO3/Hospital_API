@@ -10,7 +10,7 @@ from schemas.patient_schema import PatientCreate, PatientUpdate
 
 def create_patient(db: Session, patient: PatientCreate):
     """
-    Crea un nuvo paciente en la db
+    Crea un nuevo paciente en la db
 
     Args:
         db: Sesion de la db
