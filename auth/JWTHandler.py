@@ -10,7 +10,7 @@ from datetime import datetime, timedelta, timezone
 import os
 from dotenv import load_dotenv
 
-load_dotenv(".env")
+load_dotenv("./.config/.env")
 
 SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = os.getenv("ALGOTIHM", "HS256")

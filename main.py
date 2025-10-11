@@ -1,14 +1,4 @@
 from fastapi import FastAPI
-
-
-from routes import AuthRouter, MedicRouter, nurseRouter, UserRouter
-
-from routes import AuthRouter, MedicRouter, patientRouter, MedicalAppointmentRouter
-
-from database.config import engine, Base, get_db
-from routes import AuthRouter, MedicRouter, diagnosisRouter, patientRouter
-from database.config import get_db
-
 from routes import (
     AuthRouter,
     MedicRouter,
@@ -19,7 +9,6 @@ from routes import (
     medical_appointmentRouter,
 )
 from database.config import get_db, create_tables
-
 from fastapi.middleware.cors import CORSMiddleware
 
 
