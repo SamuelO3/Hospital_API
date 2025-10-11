@@ -2,14 +2,15 @@
 Modulo para manejar el Token de JWT
 """
 
-from jose import jwt
+from fastapi import HTTPException, status
+from jose import ExpiredSignatureError, jwt
 from jose.exceptions import JWTError
 from datetime import datetime, timedelta, timezone
 
 import os
 from dotenv import load_dotenv
 
-load_dotenv("./config/.env")
+load_dotenv(".env")
 
 SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = os.getenv("ALGOTIHM", "HS256")

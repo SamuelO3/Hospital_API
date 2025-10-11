@@ -17,12 +17,20 @@ class Nurse(Base):
 
     id_user_information = Column(
         UUID(as_uuid=True),
-        ForeignKey("User_Information.id_user_information"),
+        ForeignKey("User_Information.id_user_information", ondelete="CASCADE"),
         nullable=False,
+        unique=True,
     )
 
-    nurse_information = relationship("UserInformation", back_populates="nurse")
-    appointments = relationship("MedicalAppointment", back_populates="nurse")
+    nurse_information = relationship(
+        "UserInformation", back_populates="nurse", passive_deletes=True
+    )
+    appointments = relationship(
+        "MedicalAppointment",
+        back_populates="nurse",
+        cascade="all, delete-orphan",
+        passive_deletes=True,
+    )
 
     creation_date = Column(DateTime(timezone=True), server_default=func.now())
     update_date = Column(DateTime(timezone=True), onupdate=func.now())

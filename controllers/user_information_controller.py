@@ -1,8 +1,6 @@
 from uuid import uuid4
 from fastapi import Depends
-from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session, session
-from auth.JWTHandler import verify_token
 
 from models.user_information import UserInformation
 from schemas.user_information_schema import UserInformation as Information_schema
@@ -27,15 +25,13 @@ def create_user_information(
         db_user_information: informacion del usuario creada en la db
     """
 
-    #! TODO validacion de autenticacion
-
     exist_information = get_information_by_document_number(
         db, information.document_number_user
     )
     if exist_information:
         raise ValueError("Este documento ya se encuentra registrado")
 
-    db_user_information = Information_schema(
+    db_user_information = UserInformation(
         id_user_information=uuid4(),
         first_name_user=information.first_name_user,
         second_name_user=information.second_name_user,
@@ -69,8 +65,6 @@ def update_user_information(
         informacion del usuario actualizada
     """
 
-    #! TODO validacion de autenticacion
-
     db_user_information = get_information_by_id(db, id)
     if not db_user_information:
         raise ValueError("No existe la informacion de usuario para este id")
@@ -91,7 +85,7 @@ def update_user_information(
 
 
 def get_all_users_information(
-    db: Session, skip: int = 0, limit: int = 30, token: str = Depends()
+    db: Session, skip: int = 0, limit: int = 15, token: str = Depends()
 ):
     """
     Obtiene informacion del usuario mediante el documento de identidad
@@ -105,7 +99,6 @@ def get_all_users_information(
         informacion del usuario
     """
 
-    #! TODO validacion de autenticacion
     return db.query(UserInformation).offset(skip).limit(limit).all()
 
 
@@ -123,8 +116,6 @@ def get_information_by_document_number(
     return:
         informacion del usuario
     """
-
-    #! TODO validacion de autenticacion
 
     return (
         db.query(UserInformation)
@@ -146,8 +137,6 @@ def get_information_by_id(db: Session, id_information: str, token: str = Depends
         informacion del usuario
     """
 
-    #! TODO validacion de autenticacion
-
     return (
         db.query(UserInformation)
         .filter(UserInformation.id_user_information == id_information)
@@ -167,8 +156,6 @@ def delete_user_information(db: Session, id_information: str, token: str = Depen
     return:
         bool True si fue eliminado
     """
-
-    #! TODO validacion de autenticacion
 
     user_information_to_delete = get_information_by_id(db, id_information)
     if not user_information_to_delete:

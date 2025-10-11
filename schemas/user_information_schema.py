@@ -1,7 +1,7 @@
 from typing import Optional
 from uuid import UUID
 from pydantic import BaseModel
-from datetime import datetime
+from datetime import date, datetime
 
 #! Posiblemente este schema no tenga ningun uso
 
@@ -11,14 +11,14 @@ class UserInformationBase(BaseModel):
     second_name_user: Optional[str] = None
     first_lastname_user: str
     second_lastname_user: Optional[str] = None
-    birth_date_user: datetime
+    birth_date_user: date
     gender_user: str
     phone_number_user: str
     document_number_user: str
 
 
 class UserInformationCreate(UserInformationBase):
-    pass
+    id_user: str
 
 
 class UserInformationUpdate(UserInformationBase):
