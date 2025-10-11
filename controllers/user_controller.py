@@ -40,7 +40,7 @@ def create_user(db: Session, user: UserCreate):
         username=user.username,
         password=hashpass,
         email=user.email,
-        rol=user.rol_user,
+        rol_user=user.rol_user,
         active=True,
     )
 
@@ -99,44 +99,101 @@ def get_user_by_id(db: Session, id_user: str):
     return db.query(User).filter(User.id_user == id_user).first()
 
 
-def update_user(db: Session, id_user: str, update_info: User):
-    """
-    Actualiza un usuario buscado por su id
+# def update_user(db: Session, id_user: str, update_info: User):
+#     """
+#     Actualiza un usuario buscado por su id
 
-    Args:
-        db: Sesion de la base de datos.
-        id_user: id del usuario a actualizar.
-        update_info: nueva informacion del usuario para actualizar
-        token: token del usuario autenticado
+#     Args:
+#         db: Sesion de la base de datos.
+#         id_user: id del usuario a actualizar.
+#         update_info: nueva informacion del usuario para actualizar
+#         token: token del usuario autenticado
 
-    Return:
-        db_update_user: Usuario actualizado.
-    """
+#     Return:
+#         db_update_user: Usuario actualizado.
+#     """
 
-    #! TODO verificar token
+#     #! TODO verificar token
+
+#     db_user = get_user_by_id(db, id_user)
+
+#     if not db_user:
+#         raise ValueError("El usuario no existe")
+
+#     if not update_info.username == None:
+#         if get_user_by_username(db, update_info.username):
+#             raise ValueError("El nombre de usuario ya existe")
+#         db_user.username = update_info.username
+
+#     if not update_info.password == None:
+#         db_user = get_password_hash(update_info.password)
+
+#     if not update_info.email == None:
+#         if get_user_by_email(db, update_info.email):
+#             raise ValueError("El correo ya esta en uso")
+#         db_user.email = update_info.email
+
+#     db_user.updated_at = datetime.now()
+
+#     db.add(db_user)
+#     db.commit()
+#     db.refresh(db_user)
+
+#     return db_user
+
+# controllers/user_controller.py
+from datetime import datetime
+from sqlalchemy.orm import Session
+from pydantic import BaseModel
+from models.user import User
+from auth.security import get_password_hash
+from .user_controller import get_user_by_id, get_user_by_username, get_user_by_email
+import json
+
+def update_user(db: Session, id_user: str, update_info):
+    # — Normalización del payload —
+    if isinstance(update_info, BaseModel):
+        data = update_info.model_dump(exclude_unset=True)
+    elif isinstance(update_info, dict):
+        data = {k: v for k, v in update_info.items() if v is not None}
+    elif isinstance(update_info, str):
+        try:
+            data = json.loads(update_info)
+        except Exception:
+            raise ValueError("Body inválido: se esperaba JSON (Content-Type: application/json).")
+    else:
+        # objeto con atributos
+        data = {}
+        for k in ("username", "email", "password"):
+            if hasattr(update_info, k):
+                v = getattr(update_info, k)
+                if v is not None:
+                    data[k] = v
 
     db_user = get_user_by_id(db, id_user)
-
     if not db_user:
         raise ValueError("El usuario no existe")
 
-    if not update_info.username == None:
-        if get_user_by_username(db, update_info.username):
+    # username
+    new_username = data.get("username")
+    if new_username is not None and new_username != db_user.username:
+        if get_user_by_username(db, new_username):
             raise ValueError("El nombre de usuario ya existe")
-        db_user.username = update_info.username
+        db_user.username = new_username
 
-    if not update_info.password == None:
-        db_user = get_password_hash(update_info.password)
-
-    if not update_info.email == None:
-        if get_user_by_email(db, update_info.email):
+    # email
+    new_email = data.get("email")
+    if new_email is not None and new_email != db_user.email:
+        if get_user_by_email(db, new_email):
             raise ValueError("El correo ya esta en uso")
-        db_user.email = update_info.email
+        db_user.email = new_email
+
+    # password
+    new_password = data.get("password")
+    if new_password:
+        db_user.password = get_password_hash(new_password)
 
     db_user.updated_at = datetime.now()
-
-    db.add(db_user)
-    db.commit()
-    db.refresh(db_user)
-
+    db.add(db_user); db.commit(); db.refresh(db_user)
     return db_user
+

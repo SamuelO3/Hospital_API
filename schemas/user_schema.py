@@ -20,7 +20,7 @@ class UserCreate(UserBase):
 
 class UserUpdate(BaseModel):
     username: Optional[str]
-    email: Optional[EmailStr]
+    email: Optional[EmailStr] = None
     rol_user: Optional[str]
     password: Optional[str]
     activo: Optional[bool] = True

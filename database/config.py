@@ -10,7 +10,8 @@ from sqlalchemy.orm import sessionmaker
 
 
 # load_dotenv(".env")
-load_dotenv(".config/.env")
+load_dotenv("./config/.env")
+
 
 DATABASE_URL = os.getenv("DATABASE_URL")
 

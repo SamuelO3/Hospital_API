@@ -163,4 +163,5 @@ def delete_medical_appointment(db: Session, appointment_id: UUID):
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, 
             detail=f"Cita médica con id '{appointment_id}' no encontrada"
+
         )
