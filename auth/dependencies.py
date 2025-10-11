@@ -26,9 +26,11 @@ def get_current_user(token: str = Depends(oAuth2)):
         user = payload.get("sub")
         role = payload.get("rol_user")
         if user is None:
-            raise 
+            raise
         return {"email": user, "role_user": role}
     except Exception as e:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Token inválido o expirado.",
-        headers={"WWW-Authenticate": "Bearer"})
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Token inválido o expirado.",
+            headers={"WWW-Authenticate": "Bearer"},
+        )

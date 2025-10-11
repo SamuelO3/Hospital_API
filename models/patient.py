@@ -12,6 +12,7 @@ class Patient(Base):
     id_patient = Column(
         UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, index=True
     )
+    blood_type = Column(String(10), nullable=False, index=True)
 
     id_user_information = Column(
         UUID(as_uuid=True),
