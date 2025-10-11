@@ -27,6 +27,18 @@ def create_bill(bill: BillCreate, db: Session = Depends(get_db)):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=e)
 
 
+@router.get("/all", dependencies=[Depends(require_role(["admin", "nurse"]))])
+def get_all_bills(skip: int = 0, limit: int = 15, db: Session = Depends(get_db)):
+    try:
+        list_db_bill = get_all_bills_controller(db, skip, limit)
+
+        if not list_db_bill:
+            raise ValueError("No existen facturas en la db")
+        return list_db_bill
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=e)
+
+
 @router.get("/{id_bill}", dependencies=[Depends(require_role(["admin", "nurse"]))])
 def get_bill(id_bill: str, db: Session = Depends(get_db)):
     try:
@@ -36,18 +48,6 @@ def get_bill(id_bill: str, db: Session = Depends(get_db)):
             raise ValueError("No existe factura en la db")
 
         return db_bill
-    except Exception as e:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=e)
-
-
-@router.get("/all", dependencies=[Depends(require_role(["admin", "nurse"]))])
-def get_all_bills(skip: int = 0, limit: int = 15, db: Session = Depends(get_db)):
-    try:
-        list_db_bill = get_all_bills_controller(db, skip, limit)
-
-        if not list_db_bill:
-            raise ValueError("No existen facturas en la db")
-        return list_db_bill
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=e)
 
@@ -64,7 +64,9 @@ def update_bill(id_bill: str, update_info: BillUpdate, db: Session = Depends(get
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST0, detail=e)
 
 
-@router.delete("/delete", dependencies=[Depends(require_role(["admin", "nurse"]))])
+@router.delete(
+    "/delete/{id_bill}", dependencies=[Depends(require_role(["admin", "nurse"]))]
+)
 def delete_bill(id_bill: str, db: Session = Depends(get_db)):
     try:
         response = delete_bill_controller(id_bill, db)

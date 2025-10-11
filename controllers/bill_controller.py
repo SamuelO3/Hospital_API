@@ -104,7 +104,7 @@ def update_bill(id_bill: str, update_info: BillUpdate, db: Session):
         if not db_bill:
             raise ValueError("No existe la factura en la db")
 
-        db_bill.total = update_info
+        db_bill.total = update_info.total
         db_bill.update_date = datetime.now()
 
         db.commit()
@@ -115,7 +115,7 @@ def update_bill(id_bill: str, update_info: BillUpdate, db: Session):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=e)
 
 
-def delete_bill(id_bill: str, db: Session):
+def delete_bill(id_bill: str, db: Session) -> str:
     """
     elimina una factura mediante el ID.
 
@@ -133,6 +133,8 @@ def delete_bill(id_bill: str, db: Session):
 
         db.delete(bill_to_delete)
         db.commit()
+
+        return "Eliminado exitosamente"
 
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=e)

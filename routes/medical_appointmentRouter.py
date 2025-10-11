@@ -45,7 +45,9 @@ def create_medical_appointment_route(
 
     Roles permitidos: admin, medic
     """
-    return create_medical_appointment(db, medical_appointment)
+
+    db_medical_appointment = create_medical_appointment(db, medical_appointment)
+    return
 
 
 @router.get("/", dependencies=[Depends(require_role(["admin", "medic"]))])

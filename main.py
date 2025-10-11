@@ -4,6 +4,7 @@ from routes import (
     MedicRouter,
     billRouter,
     diagnosisRouter,
+    nurseRouter,
     patientRouter,
     medical_appointmentRouter,
 )
@@ -51,4 +52,5 @@ app.include_router(patientRouter.router)
 app.include_router(diagnosisRouter.router)
 app.include_router(medical_appointmentRouter.router)
 app.include_router(billRouter.router)
+app.include_router(nurseRouter.router)
 get_db()
