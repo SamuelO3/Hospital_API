@@ -176,12 +176,12 @@ El sistema funciona como un servidor REST que permite realizar operaciones CRUD 
 -  Crear Diagnostico → POST /diagnostico/
 -  Consultar diagnosticos → GET /diagnostico/
 -  Consultar diagnostico por id → GET /diagnostico/{diagnostico_id}
--  Actualizar diagnostico → PUT /diagnostico/{diagnostico_id}
--  Eliminar diagnostico → DELETE /diagnostico/{diagnostico_id}
+-  Actualizar diagnostico → PUT /diagnostico/update/{diagnostico_id}
+-  Eliminar diagnostico → DELETE /diagnostico/delete/{diagnostico_id}
 
 5. **Generación de Facturas**:
 -  Crear factura → POST /bill/
 -  Consultar facturas → GET /bill/
 -  Consultar facturas por paciente → GET /bill/patient
--  Actualizar facturas → PUT /bill/{id_bill}
--  Eliminar facturas → DELETE /bill/{id_bill}
+-  Actualizar facturas → PUT /bill/update/{id_bill}
+-  Eliminar facturas → DELETE /bill/delete/{id_bill}

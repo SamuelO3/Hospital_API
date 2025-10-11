@@ -1,4 +1,4 @@
-from datetime import datetime, date
+from datetime import datetime, date, time
 from typing import Optional
 from uuid import UUID
 from pydantic import BaseModel
@@ -9,14 +9,24 @@ class BillBase(BaseModel):
     Schema de factura con informacion base
     """
 
-    generation_date: date
-    generation_hour: datetime.time
     total: float
 
 
 class BillCreate(BillBase):
     """
     Schema de factura para crear una nueva factura
+    """
+
+    generation_date: date
+    generation_hour: time
+
+    id_patient: str
+    id_medical_appointment: str
+
+
+class BillUpdate(BillBase):
+    """
+    Schema de factura para actualizar una factura
     """
 
     pass

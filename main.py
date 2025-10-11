@@ -1,5 +1,13 @@
 from fastapi import FastAPI
-from routes import AuthRouter, MedicRouter, diagnosisRouter, patientRouter, medical_appointmentRouter
+from routes import (
+    AuthRouter,
+    MedicRouter,
+    billRouter,
+    diagnosisRouter,
+    nurseRouter,
+    patientRouter,
+    medical_appointmentRouter,
+)
 from database.config import get_db, create_tables
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -10,20 +18,20 @@ app = FastAPI(
     version="1.2.0",
     openapi_tags=[
         {
-            "name": "Patient",
+            "name": "Patients",
             "description": "Operaciones relacionadas con el manejo de pacientes.",
         },
         {"name": "Medics", "description": "Gestión de información de médicos."},
         {"name": "Nurses", "description": "Gestion de información de enfermeras."},
         {
-            "name": "Medical appointment",
+            "name": "Medical Appointments",
             "description": "Agendamiento y consulta de citas médicas.",
         },
         {
             "name": "Diagnosis",
             "description": "Registro y consulta de diagnósticos médicos.",
         },
-        {"name": "Bill", "description": "Gestión de facturación y pagos."},
+        {"name": "Bills", "description": "Gestión de facturación y pagos."},
         {"name": "Auth", "description": "Gestión de login y registro."},
     ],
 )
@@ -43,4 +51,6 @@ app.include_router(MedicRouter.router)
 app.include_router(patientRouter.router)
 app.include_router(diagnosisRouter.router)
 app.include_router(medical_appointmentRouter.router)
+app.include_router(billRouter.router)
+app.include_router(nurseRouter.router)
 get_db()

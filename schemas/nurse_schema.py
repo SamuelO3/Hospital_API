@@ -10,17 +10,20 @@ class NurseBase(BaseModel):
     """
 
     speciality: str
-    salary: str
+    id_user_information: UUID
 
-    first_name_user: str
-    second_name_user: Optional[str]
-    first_last_name_user: str
-    second_last_name_user: Optional[str]
-    birth_date_user: date
-    gender: str
-    phone_number: str
-    document_number: str
-    rol_user: str
+    class Config:
+        orm_mode = True
+
+    # first_name_user: str
+    # second_name_user: Optional[str]
+    # first_last_name_user: str
+    # second_last_name_user: Optional[str]
+    # birth_date_user: date
+    # gender: str
+    # phone_number: str
+    # document_number: str
+    # rol_user: str
 
 
 class NurseCreate(NurseBase):
@@ -51,3 +54,8 @@ class Nurse(NurseBase):
     """
 
     id_nurse: UUID
+
+
+class NurseUpdate(BaseModel):
+    speciality: Optional[str] = None
+    id_user_information: Optional[UUID] = None
