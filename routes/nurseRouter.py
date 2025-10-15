@@ -3,13 +3,13 @@ from models.nurse import Nurse
 from database.config import get_db
 from sqlalchemy.orm import Session
 from utils.role_utils import require_role
-from controllers.Nurse_controller import (
+from controllers.nurse_controller import (
     create_nurse as create_nurse_controller,
     get_nurse_by_id as get_nurse_by_id_controller,
     delete_nurse as delete_nurse_controller,
     update_nurse as update_nurse_controller,
 )
-from schemas.medic_schema import MedicCreate
+from schemas.nurse_schema import NurseCreate
 from uuid import UUID
 from schemas.nurse_schema import NurseUpdate
 
@@ -35,7 +35,7 @@ def get_nurses(db: Session = Depends(get_db)):
 
 
 @router.post("/", dependencies=[Depends(require_role("admin"))])
-def create_nurse(medic: MedicCreate, db: Session = Depends(get_db)):
+def create_nurse(nurse: NurseCreate, db: Session = Depends(get_db)):
     """
     Descripcion:
         Crea un nuevo registro de enfermero en la base de datos.
@@ -45,12 +45,12 @@ def create_nurse(medic: MedicCreate, db: Session = Depends(get_db)):
         db (Session): Sesión de base de datos inyectada por dependencia.
 
     Usa:
-        create_nurse_controller(db, medic)
+        create_nurse_controller(db, nurse)
 
     Returns:
         Nurse: Objeto con los datos del enfermero creado.
     """
-    return create_nurse_controller(db, medic)
+    return create_nurse_controller(db, nurse)
 
 
 @router.delete("delete/{nurse_id}", dependencies=[Depends(require_role("admin"))])

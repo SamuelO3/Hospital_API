@@ -64,7 +64,7 @@ def create_medical_appointment_route(
         MedicalAppointment: Objeto con la información de la cita médica creada.
     """
     db_medical_appointment = create_medical_appointment(db, medical_appointment)
-    return
+    return db_medical_appointment
 
 
 @router.get("/", dependencies=[Depends(require_role(["admin", "medic"]))])
