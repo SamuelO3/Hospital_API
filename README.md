@@ -70,6 +70,10 @@ git clone https://github.com/SamuelO3/Hospital_API.git
 ### **5.1 Diagrama de Arquitectura**
 ```plaintext
 HOSPITAL_API/
+
+├── .config/
+│   └── .env/
+│
 ├── alembic/
 │   └── versions/
 │
@@ -128,7 +132,6 @@ HOSPITAL_API/
 │   └── role_utils.py
 │
 ├── main.py
-├── .env
 └── requirements.txt
 ```                
 
