@@ -1,132 +1,111 @@
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends
 from models.nurse import Nurse
 from database.config import get_db
 from sqlalchemy.orm import Session
 from utils.role_utils import require_role
-from controllers.nurse_controller import create_nurse as create_nurse_controller
-from controllers.nurse_controller import delete_nurse, get_nurse_by_id, update_nurse
-from controllers.nurse_controller import get_nurse as get_nurses_controller
+from controllers.Nurse_controller import (
+    create_nurse as create_nurse_controller,
+    get_nurse_by_id as get_nurse_by_id_controller,
+    delete_nurse as delete_nurse_controller,
+    update_nurse as update_nurse_controller,
+)
+from schemas.medic_schema import MedicCreate
 from uuid import UUID
-from schemas.nurse_schema import NurseCreate, NurseUpdate, Nurse
+from schemas.nurse_schema import NurseUpdate
 
 router = APIRouter(prefix="/nurse", tags=["Nurses"])
 
 
-
-@router.get("/{nurse_id}", dependencies=[Depends(require_role("admin"))], status_code=status.HTTP_200_OK)
-def getbyid_nurse(nurse_id: str, db: Session = Depends(get_db)):
-    """
-    EndPoint para obtener una enferma por su id
-
-    Args
-        nurse_id: Identificador de la enfermera.
-        db: Sección de la db.
-
-    Utiliza
-        get_nurse_by_id: Función encargada de consultar en la db la enfermera
-
-    Rol necesario
-        admin
-
-    Retorna
-        Datos de la enferma que corresponde al nurse_id
-
-    """
-    return get_nurse_by_id(db, nurse_id)
-
-
-
-
-@router.get("/", dependencies=[Depends(require_role("admin"))], status_code=status.HTTP_200_OK)
+@router.get("/")
 def get_nurses(db: Session = Depends(get_db)):
     """
-    EndPoint para obtener todas las enfermeras de la db
+    Descripcion:
+        Obtiene una lista con todos los enfermeros registrados en la base de datos.
 
-    Args
-        db: Sección de la db.
+    Args:
+        db (Session): Sesión de base de datos inyectada por dependencia.
 
-    Utiliza
-    get_nurses_controller: Función para obtener todas las enfermeras
+    Usa:
+        db.query(Nurse).all()
 
-    Rol necesario
-        admin
-
-    Retorna
-        Datos de las enfermeras
-
+    Returns:
+        list[Nurse]: Lista con todos los registros de enfermeros.
     """
-
-    return get_nurses_controller(db)
-
+    return db.query(Nurse).all()
 
 
-@router.post("/", dependencies=[Depends(require_role("admin"))], status_code=status.HTTP_201_CREATED)
-def create_nurse(nurse: NurseCreate, db: Session = Depends(get_db)):
+@router.post("/", dependencies=[Depends(require_role("admin"))])
+def create_nurse(medic: MedicCreate, db: Session = Depends(get_db)):
     """
-    EndPoint para crear una enfermera
+    Descripcion:
+        Crea un nuevo registro de enfermero en la base de datos.
 
-    Args
-        db: Sección de la db
-        nurse: argumento que llama al NurseCreate del esquema
+    Args:
+        medic (MedicCreate): Datos del enfermero a registrar.
+        db (Session): Sesión de base de datos inyectada por dependencia.
 
-    Utiliza
-    create_nurse_controller: Función para crear una enfermera
+    Usa:
+        create_nurse_controller(db, medic)
 
-    Rol necesario
-        admin
-
-    Retorna
-        Creación de la enfermera
-
+    Returns:
+        Nurse: Objeto con los datos del enfermero creado.
     """
-    return create_nurse_controller(db, nurse)
+    return create_nurse_controller(db, medic)
 
 
-
-@router.delete("/{nurse_id}", dependencies=[Depends(require_role("admin"))], status_code=status.HTTP_200_OK)
-def remove_nurse(nurse_id: str, db: Session = Depends(get_db)):
+@router.delete("delete/{nurse_id}", dependencies=[Depends(require_role("admin"))])
+def remove_nurse(nurse_id: UUID, db: Session = Depends(get_db)):
     """
-    EndPoint para borrar una enfermera
+    Descripcion:
+        Elimina un enfermero existente en la base de datos mediante su ID.
 
-    Args
-        db: Sección de la db
-        nurse_id: Atributo necesario para identificar qué enfermera borrar
+    Args:
+        nurse_id (UUID): Identificador único del enfermero a eliminar.
+        db (Session): Sesión de base de datos inyectada por dependencia.
 
-    Utiliza
-    delete_nurse: Función para eliminar una enfermera
+    Usa:
+        delete_nurse_controller(db, nurse_id)
 
-    Rol necesario
-        admin
-
-    Retorna
-        Borra la enferma y devuelve el id de la misma
-
+    Returns:
+        dict: Mensaje de confirmación o resultado de la eliminación.
     """
-    return delete_nurse(db, nurse_id)
+    return delete_nurse_controller(db, nurse_id)
 
 
-
-
-@router.put("/{nurse_id}", dependencies=[Depends(require_role("admin"))], status_code=status.HTTP_200_OK)
-def update_nurse1(nurse_id: UUID, Nurse: NurseCreate, db: Session = Depends(get_db)):
+@router.get("byid/{nurse_id}", dependencies=[Depends(require_role("admin"))])
+def get_by_id_nurse(nurse_id: UUID, db: Session = Depends(get_db)):
     """
-    EndPoint para actualizar una enfermera
+    Descripcion:
+        Obtiene un enfermero específico mediante su identificador único.
 
-    Args
-        db: Sección de la db
-        nurse_id: Atributo necesario para identificar qué enfermera actualizar
-        Nurse: llama al NurseCreate para los párametros
+    Args:
+        nurse_id (UUID): Identificador único del enfermero.
+        db (Session): Sesión de base de datos inyectada por dependencia.
 
-    Utiliza
-    update_nurse: Función para actualizar una enfermera
+    Usa:
+        get_nurse_by_id_controller(db, nurse_id)
 
-    Rol necesario
-        admin
-
-    Retorna
-        Actualiza la enfermera y devuelve todo el cuerpo de la actualización
-
+    Returns:
+        Nurse: Objeto con los datos del enfermero encontrado.
     """
-    return update_nurse(db, nurse_id, Nurse)
+    return get_nurse_by_id_controller(db, nurse_id)
 
 
+@router.put("update/{nurse_id}", dependencies=[Depends(require_role("admin"))])
+def update_nurse(nurse_id: UUID, body: NurseUpdate, db: Session = Depends(get_db)):
+    """
+    Descripcion:
+        Actualiza los datos de un enfermero existente en la base de datos.
+
+    Args:
+        nurse_id (UUID): Identificador único del enfermero a actualizar.
+        body (NurseUpdate): Datos nuevos del enfermero.
+        db (Session): Sesión de base de datos inyectada por dependencia.
+
+    Usa:
+        update_nurse_controller(db, nurse_id, body)
+
+    Returns:
+        Nurse: Objeto con los datos actualizados del enfermero.
+    """
+    return update_nurse_controller(db, nurse_id, body)

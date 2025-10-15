@@ -30,11 +30,19 @@ async def login(login: LoginRequest, db: SessionLocal = Depends(get_db)):
     Args:
         login: Credenciales del usuario (correo electrónico y contraseña).
         db: Sesión de base de datos.
+    Args:
+        login: Credenciales del usuario (correo electrónico y contraseña).
+        db: Sesión de base de datos.
 
     Usa:
         autheticate_user: Función que valida las credenciales del usuario.
         create_token_user: Función que genera el token JWT para el usuario autenticado.
+    Usa:
+        autheticate_user: Función que valida las credenciales del usuario.
+        create_token_user: Función que genera el token JWT para el usuario autenticado.
 
+    Roles permitidos:
+        Público (no requiere autenticación previa).
     Roles permitidos:
         Público (no requiere autenticación previa).
 
@@ -81,11 +89,20 @@ async def register(
         user: Datos de autenticación del usuario (credenciales y rol).
         user_information: Datos personales del usuario (información adicional).
         db: Sesión de base de datos.
+    Args:
+        user: Datos de autenticación del usuario (credenciales y rol).
+        user_information: Datos personales del usuario (información adicional).
+        db: Sesión de base de datos.
 
     Usa:
         create_user: Función que registra al usuario en la base de datos.
         create_user_information: Función que guarda la información personal del usuario.
+    Usa:
+        create_user: Función que registra al usuario en la base de datos.
+        create_user_information: Función que guarda la información personal del usuario.
 
+    Roles permitidos:
+        Público (no requiere autenticación previa).
     Roles permitidos:
         Público (no requiere autenticación previa).
 

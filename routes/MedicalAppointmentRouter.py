@@ -29,9 +29,18 @@ def get_medical_appointment_by_id_route(
     id_medical_appointment: UUID, db: Session = Depends(get_db)
 ):
     """
-    Obtiene una cita médica por su ID.
+    Descripcion:
+        Obtiene una cita médica específica de la base de datos mediante su ID.
 
-    Roles permitidos: admin, medic
+    Args:
+        id_medical_appointment (UUID): Identificador único de la cita médica.
+        db (Session): Sesión de base de datos inyectada por dependencia.
+
+    Usa:
+        get_medical_appointment_by_id(db, id_medical_appointment)
+
+    Returns:
+        MedicalAppointment: Objeto con los datos de la cita médica encontrada.
     """
     return get_medical_appointment_by_id(db, id_medical_appointment)
 
@@ -41,11 +50,19 @@ def create_medical_appointment_route(
     medical_appointment: MedicalAppointmentCreate, db: Session = Depends(get_db)
 ):
     """
-    Crea una nueva cita médica en la base de datos.
+    Descripcion:
+        Crea una nueva cita médica y la guarda en la base de datos.
 
-    Roles permitidos: admin, medic
+    Args:
+        medical_appointment (MedicalAppointmentCreate): Datos de la cita médica a registrar.
+        db (Session): Sesión de base de datos inyectada por dependencia.
+
+    Usa:
+        create_medical_appointment(db, medical_appointment)
+
+    Returns:
+        MedicalAppointment: Objeto con la información de la cita médica creada.
     """
-
     db_medical_appointment = create_medical_appointment(db, medical_appointment)
     return
 
@@ -53,7 +70,17 @@ def create_medical_appointment_route(
 @router.get("/", dependencies=[Depends(require_role(["admin", "medic"]))])
 def get_all_medical_appointments_route(db: Session = Depends(get_db)):
     """
-    Obtiene todas las citas médicas en la base de datos.
+    Descripcion:
+        Obtiene todas las citas médicas registradas en la base de datos.
+
+    Args:
+        db (Session): Sesión de base de datos inyectada por dependencia.
+
+    Usa:
+        get_all_medical_appointments(db)
+
+    Returns:
+        list[MedicalAppointment]: Lista con todas las citas médicas almacenadas.
     """
     return get_all_medical_appointments(db)
 
@@ -68,9 +95,19 @@ def update_medical_appointment_route(
     db: Session = Depends(get_db),
 ):
     """
-    Actualiza una cita médica en la base de datos.
+    Descripcion:
+        Actualiza la información de una cita médica existente en la base de datos.
 
-    Roles permitidos: admin, medic
+    Args:
+        id_medical_appointment (UUID): Identificador de la cita médica a actualizar.
+        medical_appointment (MedicalAppointmentCreate): Nuevos datos de la cita médica.
+        db (Session): Sesión de base de datos inyectada por dependencia.
+
+    Usa:
+        update_medical_appointment(db, id_medical_appointment, medical_appointment)
+
+    Returns:
+        MedicalAppointment: Objeto con la cita médica actualizada.
     """
     return update_medical_appointment(db, id_medical_appointment, medical_appointment)
 
@@ -83,8 +120,17 @@ def delete_medical_appointment_route(
     id_medical_appointment: UUID, db: Session = Depends(get_db)
 ):
     """
-    Elimina una cita médica de la base de datos.
+    Descripcion:
+        Elimina una cita médica existente en la base de datos mediante su ID.
 
-    Roles permitidos: admin, medic
+    Args:
+        id_medical_appointment (UUID): Identificador único de la cita médica a eliminar.
+        db (Session): Sesión de base de datos inyectada por dependencia.
+
+    Usa:
+        delete_medical_appointment(db, id_medical_appointment)
+
+    Returns:
+        dict: Mensaje de confirmación o resultado de la eliminación.
     """
     return delete_medical_appointment(db, id_medical_appointment)
