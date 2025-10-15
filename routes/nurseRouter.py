@@ -9,9 +9,8 @@ from controllers.Nurse_controller import (
     delete_nurse as delete_nurse_controller,
     update_nurse as update_nurse_controller,
 )
-from schemas.medic_schema import MedicCreate
 from uuid import UUID
-from schemas.nurse_schema import NurseUpdate
+from schemas.nurse_schema import NurseCreate, NurseUpdate
 
 router = APIRouter(prefix="/nurse", tags=["Nurses"])
 
@@ -35,7 +34,7 @@ def get_nurses(db: Session = Depends(get_db)):
 
 
 @router.post("/", dependencies=[Depends(require_role("admin"))])
-def create_nurse(medic: MedicCreate, db: Session = Depends(get_db)):
+def create_nurse(nurse: NurseCreate, db: Session = Depends(get_db)):
     """
     Descripcion:
         Crea un nuevo registro de enfermero en la base de datos.
@@ -50,7 +49,7 @@ def create_nurse(medic: MedicCreate, db: Session = Depends(get_db)):
     Returns:
         Nurse: Objeto con los datos del enfermero creado.
     """
-    return create_nurse_controller(db, medic)
+    return create_nurse_controller(db, nurse)
 
 
 @router.delete("delete/{nurse_id}", dependencies=[Depends(require_role("admin"))])

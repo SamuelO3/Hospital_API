@@ -4,7 +4,7 @@ from routes import (
     MedicRouter,
     billRouter,
     diagnosisRouter,
-    nurseRouter,
+    NurseRouter,
     patientRouter,
     medical_appointmentRouter,
     UserRouter,
@@ -34,6 +34,7 @@ app = FastAPI(
         },
         {"name": "Bills", "description": "Gestión de facturación y pagos."},
         {"name": "Auth", "description": "Gestión de login y registro."},
+        {"name": "Users", "description": "Gestión de tabla usuarios."},
     ],
 )
 
@@ -54,6 +55,6 @@ app.include_router(patientRouter.router)
 app.include_router(diagnosisRouter.router)
 app.include_router(medical_appointmentRouter.router)
 app.include_router(billRouter.router)
-app.include_router(nurseRouter.router)
+app.include_router(NurseRouter.router)
 app.include_router(UserRouter.router)
 get_db()
