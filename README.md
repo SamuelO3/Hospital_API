@@ -49,6 +49,11 @@ El manual cubre:
 
 ---
 
+## **Diagrama lucid**
+[Diagrama lucid](https://lucid.app/lucidchart/f656f294-e9a2-4d6c-8f4a-5cc748e1a36b/edit?viewport_loc=-2788%2C-1225%2C2616%2C1279%2C0_0&invitationId=inv_640a94c1-5890-40bf-8239-1cbbb9634226)
+
+---
+
 ## **4. Instalación**
 ### **4.1 Descarga de Archivos**
 git clone https://github.com/SamuelO3/Hospital_API.git
