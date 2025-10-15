@@ -20,23 +20,7 @@ router = APIRouter(prefix="/auth", tags=["Auth"])
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
 
 
-"""
-Endpoint que autentica a un usuario y genera un token de acceso JWT.
 
-Args:
-    login: Credenciales del usuario (correo electrónico y contraseña).
-    db: Sesión de base de datos.
-
-Usa:
-    autheticate_user: Función que valida las credenciales del usuario.
-    create_token_user: Función que genera el token JWT para el usuario autenticado.
-
-Roles permitidos:
-    Público (no requiere autenticación previa).
-
-Returns:
-    LoginResponse: Objeto que contiene el token de acceso, su tipo y la información básica del usuario autenticado.
-"""
 
 
 
@@ -52,6 +36,23 @@ async def login(login: LoginRequest, db: SessionLocal = Depends(get_db)):
             )
         # access_token_expires = timedelta(minutes=ACCES_TOKEN_EXPIRES_TIME)
         access_token = create_token_user(user)
+        """
+        Endpoint que autentica a un usuario y genera un token de acceso JWT.
+
+        Args:
+            login: Credenciales del usuario (correo electrónico y contraseña).
+            db: Sesión de base de datos.
+
+        Usa:
+            autheticate_user: Función que valida las credenciales del usuario.
+            create_token_user: Función que genera el token JWT para el usuario autenticado.
+
+        Roles permitidos:
+            Público (no requiere autenticación previa).
+
+        Returns:
+            LoginResponse: Objeto que contiene el token de acceso, su tipo y la información básica del usuario autenticado.
+        """
         return LoginResponse(
             access_token=access_token,
             token_type="bearer",
@@ -76,24 +77,7 @@ async def login(login: LoginRequest, db: SessionLocal = Depends(get_db)):
     # return {"access_token": access_token, "token_type": "bearer"}
 
 
-"""
-Endpoint que registra un nuevo usuario y su información asociada en la base de datos.
 
-Args:
-    user: Datos de autenticación del usuario (credenciales y rol).
-    user_information: Datos personales del usuario (información adicional).
-    db: Sesión de base de datos.
-
-Usa:
-    create_user: Función que registra al usuario en la base de datos.
-    create_user_information: Función que guarda la información personal del usuario.
-
-Roles permitidos:
-    Público (no requiere autenticación previa).
-
-Returns:
-    UserResponse, UserInformation: Objetos con la información del usuario y su información asociada creados exitosamente.
-"""
 
 
 @router.post("/register")
@@ -108,6 +92,24 @@ async def register(
         user_information.id_user = db_user.id_user
         db_user_information = create_user_information(db, user_information)
 
+        """
+        Endpoint que registra un nuevo usuario y su información asociada en la base de datos.
+
+        Args:
+            user: Datos de autenticación del usuario (credenciales y rol).
+            user_information: Datos personales del usuario (información adicional).
+            db: Sesión de base de datos.
+
+        Usa:
+            create_user: Función que registra al usuario en la base de datos.
+            create_user_information: Función que guarda la información personal del usuario.
+
+        Roles permitidos:
+            Público (no requiere autenticación previa).
+
+        Returns:
+            UserResponse, db_user_information: Objetos con la información del usuario y su información asociada creados exitosamente.
+        """
         return UserResponse.from_orm(db_user), db_user_information
 
     except HTTPException as e:
