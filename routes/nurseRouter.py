@@ -11,7 +11,7 @@ from controllers.nurse_controller import (
 )
 from schemas.nurse_schema import NurseCreate
 from uuid import UUID
-from schemas.nurse_schema import NurseUpdate
+from schemas.nurse_schema import NurseCreate, NurseUpdate
 
 router = APIRouter(prefix="/nurse", tags=["Nurses"])
 

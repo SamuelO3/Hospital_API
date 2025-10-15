@@ -7,9 +7,8 @@ from routes import (
     nurseRouter,
     patientRouter,
     MedicalAppointmentRouter,
-    UserRouter,
 )
-from database.config import get_db, create_tables
+from database.config import get_db
 from fastapi.middleware.cors import CORSMiddleware
 
 
@@ -34,6 +33,7 @@ app = FastAPI(
         },
         {"name": "Bills", "description": "Gestión de facturación y pagos."},
         {"name": "Auth", "description": "Gestión de login y registro."},
+        {"name": "Users", "description": "Gestión de tabla usuarios."},
     ],
 )
 
