@@ -7,6 +7,7 @@ from routes import (
     nurseRouter,
     patientRouter,
     medical_appointmentRouter,
+    UserRouter,
 )
 from database.config import get_db, create_tables
 from fastapi.middleware.cors import CORSMiddleware
@@ -54,10 +55,5 @@ app.include_router(diagnosisRouter.router)
 app.include_router(medical_appointmentRouter.router)
 app.include_router(billRouter.router)
 app.include_router(nurseRouter.router)
-get_db()
-
 app.include_router(UserRouter.router)
-get_db()
-
-app.include_router(MedicalAppointmentRouter.router)
 get_db()
