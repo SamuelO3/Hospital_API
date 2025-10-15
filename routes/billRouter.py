@@ -14,7 +14,7 @@ from database.config import get_db
 from schemas.bill_schema import BillCreate, BillUpdate
 from utils.role_utils import require_role
 
-from models.bill import Bill
+from schemas.bill_schema import Bill
 
 router = APIRouter(prefix="/bill", tags=["Bills"])
 
