@@ -49,7 +49,10 @@ def get_medic_by_id(db: Session, medic_id: UUID):
     if medic:
         return medic
     else:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Medic with id '{medic_id}' not found")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Medic with id '{medic_id}' not found",
+        )
 
 
 def get_medics(db: Session):
@@ -66,7 +69,9 @@ def get_medics(db: Session):
     if medicos:
         return medicos
     else:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No se encontraron medicos")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="No se encontraron medicos"
+        )
 
 
 def update_medic(db: Session, medic_id: UUID, medic: Medic_schema):
@@ -85,7 +90,6 @@ def update_medic(db: Session, medic_id: UUID, medic: Medic_schema):
     if medic_to_update:
         try:
             medic_to_update.specialty = medic.specialty
-            medic_to_update.id_user_information = medic.id_user_information
             db.commit()
             db.refresh(medic_to_update)
             return medic_to_update
@@ -108,7 +112,7 @@ def delete_medic(db: Session, medic_id: UUID):
     """
     medic_to_delete = get_medic_by_id(db, medic_id)
     if medic_to_delete:
-        
+
         try:
             user_info = medic_to_delete.medic_information
             db.delete(medic_to_delete)
@@ -119,11 +123,10 @@ def delete_medic(db: Session, medic_id: UUID):
                     db.delete(user)
                 else:
                     db.delete(user_info)
-                
-            
+
             db.commit()
             return medic_to_delete
         except Exception as e:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
     else:
-        raise 
+        raise

@@ -4,7 +4,7 @@ from routes import (
     MedicRouter,
     billRouter,
     diagnosisRouter,
-    NurseRouter,
+    nurseRouter,
     patientRouter,
     medical_appointmentRouter,
     UserRouter,
@@ -48,6 +48,17 @@ cors = CORSMiddleware(
 )
 
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:4200",
+        "http://127.0.0.1:4200",
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],  # incluye OPTIONS
+    allow_headers=["*"],
+)
+
 app.include_router(AuthRouter.router)
 app.include_router(MedicRouter.router)
 
@@ -55,6 +66,6 @@ app.include_router(patientRouter.router)
 app.include_router(diagnosisRouter.router)
 app.include_router(medical_appointmentRouter.router)
 app.include_router(billRouter.router)
-app.include_router(NurseRouter.router)
+app.include_router(nurseRouter.router)
 app.include_router(UserRouter.router)
 get_db()
