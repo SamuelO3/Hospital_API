@@ -45,7 +45,11 @@ def get_medical_appointment_by_id_route(
     return get_medical_appointment_by_id(db, id_medical_appointment)
 
 
-@router.post("/", dependencies=[Depends(require_role(["admin", "medic"]))])
+@router.post(
+    "/",
+    response_model=MedicalAppointment_schema,
+    dependencies=[Depends(require_role(["admin", "medic"]))],
+)
 def create_medical_appointment_route(
     medical_appointment: MedicalAppointmentCreate, db: Session = Depends(get_db)
 ):
@@ -64,10 +68,14 @@ def create_medical_appointment_route(
         MedicalAppointment: Objeto con la información de la cita médica creada.
     """
     db_medical_appointment = create_medical_appointment(db, medical_appointment)
-    return
+    return db_medical_appointment
 
 
-@router.get("/", dependencies=[Depends(require_role(["admin", "medic"]))])
+@router.get(
+    "/all/",
+    response_model=list[MedicalAppointment_schema],
+    dependencies=[Depends(require_role(["admin", "medic"]))],
+)
 def get_all_medical_appointments_route(db: Session = Depends(get_db)):
     """
     Descripcion:

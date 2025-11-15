@@ -46,13 +46,3 @@ class MedicalAppointment(MedicalAppointmentBase):
     """
 
     id_medical_appointment: UUID
-
-
-# class MedicalAppointmentUpdate(BaseModel):
-#     appointment_date: Optional[date] = None
-#     appointment_hour: Optional[time] = None
-#     location: Optional[str] = None
-#     id_medic: Optional[UUID] = None
-#     id_nurse: Optional[UUID] = None
-#     id_patient: Optional[UUID] = None
-#     id_diagnosis: Optional[UUID] = None
