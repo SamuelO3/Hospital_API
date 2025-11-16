@@ -20,7 +20,9 @@ router = APIRouter(prefix="/bill", tags=["Bills"])
 
 
 @router.post(
-    "/", dependencies=[Depends(require_role(["admin", "nurse"]))], response_model=Bill
+    "/",
+    dependencies=[Depends(require_role(["admin", "nurse"]))],
+    response_model=Bill,
 )
 def create_bill(bill: BillCreate, db: Session = Depends(get_db)):
     """
@@ -48,8 +50,8 @@ def create_bill(bill: BillCreate, db: Session = Depends(get_db)):
 
 @router.get(
     "/all",
-    dependencies=[Depends(require_role(["admin", "nurse"]))],
     response_model=list[Bill],
+    dependencies=[Depends(require_role(["admin", "nurse"]))],
 )
 def get_all_bills(skip: int = 0, limit: int = 15, db: Session = Depends(get_db)):
     """
