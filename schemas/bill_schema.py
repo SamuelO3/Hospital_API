@@ -11,17 +11,19 @@ class BillBase(BaseModel):
 
     total: float
 
+    generation_date: date
+    generation_hour: time
+
+    id_patient: UUID
+    id_medical_appointment: UUID
+
 
 class BillCreate(BillBase):
     """
     Schema de factura para crear una nueva factura
     """
 
-    generation_date: date
-    generation_hour: time
-
-    id_patient: str
-    id_medical_appointment: str
+    pass
 
 
 class BillUpdate(BillBase):

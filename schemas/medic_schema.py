@@ -10,10 +10,10 @@ class MedicBase(BaseModel):
     """
 
     specialty: str
-    id_user_information: UUID
 
     class Config:
         orm_mode = True
+
     # speciality: str
 
     # first_name_user: str
@@ -32,6 +32,16 @@ class MedicCreate(MedicBase):
     Schema de medico para crear nuevo medico
     """
 
+    id_user_information: UUID
+    pass
+
+
+class MedicUpdate(MedicBase):
+    """
+    Schema de medico para crear nuevo medico
+    """
+
+    specialty: str
     pass
 
 
@@ -55,4 +65,3 @@ class Medic(MedicBase):
     """
 
     id_medic: UUID
-

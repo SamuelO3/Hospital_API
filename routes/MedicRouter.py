@@ -9,7 +9,7 @@ from controllers.medic_controller import (
     update_medic as update_medic_controller,
     delete_medic as delete_medic_controller,
 )
-from schemas.medic_schema import MedicCreate
+from schemas.medic_schema import MedicCreate, MedicUpdate
 from uuid import UUID, uuid4
 
 router = APIRouter(prefix="/medics", tags=["Medics"])
@@ -41,7 +41,9 @@ def get_medic_by_id(medic_id: UUID, db: Session = Depends(get_db)):
 
 
 @router.get(
-    "/", dependencies=[Depends(require_role("admin"))], status_code=status.HTTP_200_OK
+    "/",
+    dependencies=[Depends(require_role("admin"))],
+    status_code=status.HTTP_200_OK,
 )
 def get_medics(db: Session = Depends(get_db)):
     """
@@ -90,11 +92,11 @@ def create_medic(medic: MedicCreate, db: Session = Depends(get_db)):
 
 
 @router.put(
-    "/{medic_id}",
+    "/update/{medic_id}",
     dependencies=[Depends(require_role("admin"))],
     status_code=status.HTTP_200_OK,
 )
-def update_medic(medic_id: UUID, medic: MedicCreate, db: Session = Depends(get_db)):
+def update_medic(medic_id: UUID, medic: MedicUpdate, db: Session = Depends(get_db)):
     """
     Endpoint que actualiza la información de un médico existente en la base de datos.
 
@@ -116,7 +118,7 @@ def update_medic(medic_id: UUID, medic: MedicCreate, db: Session = Depends(get_d
 
 
 @router.delete(
-    "/{medic_id}",
+    "/delete/{medic_id}",
     dependencies=[Depends(require_role("admin"))],
     status_code=status.HTTP_200_OK,
 )
