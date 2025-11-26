@@ -23,6 +23,7 @@ def get_nurses(db: Session = Depends(get_db)):
 @router.post("/", dependencies=[Depends(require_role("admin"))])
 def create_nurse(nurse: NurseCreate, db: Session = Depends(get_db)):
     """
+    
     Descripcion:
         Crea un nuevo registro de enfermero en la base de datos.
 
@@ -35,6 +36,7 @@ def create_nurse(nurse: NurseCreate, db: Session = Depends(get_db)):
 
     Returns:
         Nurse: Objeto con los datos del enfermero creado.
+
     """
     return create_nurse_controller(db, nurse)
 
