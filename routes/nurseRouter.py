@@ -31,7 +31,7 @@ def create_nurse(nurse: NurseCreate, db: Session = Depends(get_db)):
         db (Session): Sesión de base de datos inyectada por dependencia.
 
     Usa:
-        create_nurse_controller(db, nurse)
+        create_nurse_controller(db, nurse).
 
     Returns:
         Nurse: Objeto con los datos del enfermero creado.
