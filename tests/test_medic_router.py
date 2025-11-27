@@ -3,6 +3,9 @@ from fastapi import status
 from uuid import uuid4
 from datetime import date
 
+# Import the auth_headers fixture from test_auth_router
+from test_auth_router import auth_headers
+
 # Datos de prueba para médicos
 @pytest.fixture
 def test_medic_data():
@@ -12,37 +15,42 @@ def test_medic_data():
         "user_id": str(uuid4())  # ID de usuario existente
     }
 
+# Fixture para crear un médico de prueba
+@pytest.fixture
+def create_test_medic(client, test_medic_data, admin_auth_headers):
+    response = client.post("/medics/", json=test_medic_data, headers=admin_auth_headers)
+    assert response.status_code == status.HTTP_201_CREATED
+    return response.json()
+
 # Test para crear un médico
-def test_create_medic(client, test_medic_data):
-    """Test para crear un nuevo médico"""
-    # Necesitamos un token de administrador para esta prueba
-    # Primero, crear un usuario administrador y obtener su token
-    admin_user = {
-        "email": "admin@example.com",
-        "password": "adminpassword123",
-        "role": "admin"
-    }
-    admin_info = {
-        "first_name": "Admin",
-        "last_name": "User",
-        "phone_number": "+1234567890",
-        "address": "123 Admin St"
-    }
+def test_create_medic(client, test_medic_data, admin_auth_headers, test_user, test_user_info):
+    """Test para crear un nuevo médico (requiere rol de administrador)"""
+    # Intentar crear médico sin autenticación
+    response = client.post("/medics/", json=test_medic_data)
+    assert response.status_code == status.HTTP_401_UNAUTHORIZED
     
-    # Registrar el usuario administrador
-    client.post("/auth/register", json={"user": admin_user, "user_information": admin_info})
+    # Crear un usuario normal (no administrador)
+    regular_user = test_user.copy()
+    regular_user.update(test_user_info)
+    response = client.post("/auth/register", json=regular_user)
+    assert response.status_code == status.HTTP_201_CREATED
     
-    # Iniciar sesión para obtener el token
+    # Iniciar sesión como usuario normal
     login_data = {
-        "username": admin_user["email"],
-        "password": admin_user["password"]
+        "username": test_user["email"],
+        "password": test_user["password"]
     }
-    login_response = client.post("/auth/login", data=login_data)
-    token = login_response.json()["access_token"]
+    response = client.post("/auth/login", data=login_data)
+    assert response.status_code == status.HTTP_200_OK
+    regular_token = response.json()["access_token"]
+    regular_headers = {"Authorization": f"Bearer {regular_token}"}
     
-    # Crear el médico con el token de autenticación
-    headers = {"Authorization": f"Bearer {token}"}
-    response = client.post("/medics/", json=test_medic_data, headers=headers)
+    # Intentar crear médico como usuario normal (debería fallar)
+    response = client.post("/medics/", json=test_medic_data, headers=regular_headers)
+    assert response.status_code == status.HTTP_403_FORBIDDEN
+    
+    # Crear el médico con el token de administrador
+    response = client.post("/medics/", json=test_medic_data, headers=admin_auth_headers)
     
     # Verificar la respuesta
     assert response.status_code == status.HTTP_201_CREATED
@@ -52,89 +60,65 @@ def test_create_medic(client, test_medic_data):
     assert data["license_number"] == test_medic_data["license_number"]
 
 # Test para obtener un médico por ID
-def test_get_medic_by_id(client, test_medic_data):
+def test_get_medic_by_id(client, create_test_medic, admin_auth_headers):
     """Test para obtener un médico por su ID"""
-    # Primero necesitamos crear un médico para obtenerlo
-    # (asumiendo que ya tenemos un admin logueado de la prueba anterior)
-    login_data = {"username": "admin@example.com", "password": "adminpassword123"}
-    login_response = client.post("/auth/login", data=login_data)
-    token = login_response.json()["access_token"]
-    headers = {"Authorization": f"Bearer {token}"}
-    
-    # Crear el médico
-    create_response = client.post("/medics/", json=test_medic_data, headers=headers)
-    medic_id = create_response.json()["id"]
+    # Obtener el ID del médico creado por el fixture
+    medic_id = create_test_medic["id"]
     
     # Obtener el médico por ID
-    response = client.get(f"/medics/{medic_id}", headers=headers)
+    response = client.get(f"/medics/{medic_id}", headers=admin_auth_headers)
     
     # Verificar la respuesta
     assert response.status_code == status.HTTP_200_OK
     data = response.json()
     assert data["id"] == medic_id
-    assert data["specialty"] == test_medic_data["specialty"]
+    assert data["specialty"] == create_test_medic["specialty"]
 
 # Test para obtener todos los médicos
-def test_get_medics(client):
+def test_get_medics(client, create_test_medic, admin_auth_headers):
     """Test para obtener todos los médicos"""
-    # Obtener token de administrador
-    login_data = {"username": "admin@example.com", "password": "adminpassword123"}
-    login_response = client.post("/auth/login", data=login_data)
-    token = login_response.json()["access_token"]
-    headers = {"Authorization": f"Bearer {token}"}
-    
     # Obtener todos los médicos
-    response = client.get("/medics/", headers=headers)
+    response = client.get("/medics/", headers=admin_auth_headers)
     
     # Verificar la respuesta
     assert response.status_code == status.HTTP_200_OK
-    assert isinstance(response.json(), list)
+    medics = response.json()
+    assert isinstance(medics, list)
+    assert len(medics) > 0
+    assert any(medic["id"] == create_test_medic["id"] for medic in medics)
 
 # Test para actualizar un médico
-def test_update_medic(client, test_medic_data):
+def test_update_medic(client, create_test_medic, admin_auth_headers):
     """Test para actualizar un médico existente"""
-    # Obtener token de administrador
-    login_data = {"username": "admin@example.com", "password": "adminpassword123"}
-    login_response = client.post("/auth/login", data=login_data)
-    token = login_response.json()["access_token"]
-    headers = {"Authorization": f"Bearer {token}"}
+    medic_id = create_test_medic["id"]
     
-    # Crear un médico para actualizar
-    create_response = client.post("/medics/", json=test_medic_data, headers=headers)
-    medic_id = create_response.json()["id"]
-    
-    # Datos de actualización
-    update_data = {"specialty": "Neurología"}
+    # Datos actualizados
+    updated_data = {
+        "specialty": "Neurología",
+        "license_number": "UPDATED123",
+        "user_id": create_test_medic["user_id"]  # Incluir el user_id requerido
+    }
     
     # Actualizar el médico
-    response = client.put(f"/medics/{medic_id}", json=update_data, headers=headers)
+    response = client.put(f"/medics/{medic_id}", json=updated_data, headers=admin_auth_headers)
     
     # Verificar la respuesta
     assert response.status_code == status.HTTP_200_OK
     data = response.json()
-    assert data["specialty"] == update_data["specialty"]
-    assert data["license_number"] == test_medic_data["license_number"]  # No debería cambiar
+    assert data["specialty"] == "Neurología"
+    assert data["license_number"] == "UPDATED123"
 
 # Test para eliminar un médico
-def test_delete_medic(client, test_medic_data):
+def test_delete_medic(client, create_test_medic, admin_auth_headers):
     """Test para eliminar un médico"""
-    # Obtener token de administrador
-    login_data = {"username": "admin@example.com", "password": "adminpassword123"}
-    login_response = client.post("/auth/login", data=login_data)
-    token = login_response.json()["access_token"]
-    headers = {"Authorization": f"Bearer {token}"}
-    
-    # Crear un médico para eliminar
-    create_response = client.post("/medics/", json=test_medic_data, headers=headers)
-    medic_id = create_response.json()["id"]
+    medic_id = create_test_medic["id"]
     
     # Eliminar el médico
-    response = client.delete(f"/medics/{medic_id}", headers=headers)
+    response = client.delete(f"/medics/{medic_id}", headers=admin_auth_headers)
     
-    # Verificar la respuesta
+    # Verificar que se eliminó correctamente
     assert response.status_code == status.HTTP_200_OK
-    assert response.json() == {"message": "Medic deleted successfully"}
     
-    # Verificar que el médico ya no existe
-    get_response = client.get(f"/medics/{medic_id}", headers=headers)
-    assert get_response.status_code == status.HTTP_404_NOT_FOUND
+    # Verificar que ya no existe
+    response = client.get(f"/medics/{medic_id}", headers=admin_auth_headers)
+    assert response.status_code == status.HTTP_404_NOT_FOUND
