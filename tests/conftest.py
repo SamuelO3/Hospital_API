@@ -39,9 +39,9 @@ def client():
 # Fixtures para datos de prueba
 @pytest.fixture
 def test_user():
-    return {
+    payload= {
         "user": {
-            "username": "test@example.com",
+            "username": "test",
             "email": "test@example.com",
             "rol_user": "patient",
             "password": "testpassword123"
@@ -58,11 +58,20 @@ def test_user():
             "id_user": "string"
         }
     }
+    user_flat = {
+        "username": payload["user"]["username"],
+        "email": payload["user"]["email"],
+        "rol_user": payload["user"]["rol_user"],
+        "password": payload["user"]["password"],
+        "payload": payload
+    }
+    return user_flat
+
 @pytest.fixture
 def test_admin_user():
-    return {
+    payload= {
         "user": {
-            "username": "admin@example.com",
+            "username": "admin",
             "email": "admin@example.com",
             "rol_user": "admin",
             "password": "adminpassword123"
@@ -79,14 +88,27 @@ def test_admin_user():
             "id_user": "string"
         }
     }
+    admin_flat = {
+        "username": payload["user"]["username"],
+        "email": payload["user"]["email"],
+        "rol_user": payload["user"]["rol_user"],
+        "password": payload["user"]["password"],
+        "payload": payload
+    }
+    return admin_flat
 
 @pytest.fixture
 def test_user_info():
     return {
-        "first_name": "Test",
-        "last_name": "User",
-        "phone_number": "+1234567890",
-        "address": "123 Test St"
+        "first_name_user": "Test",
+        "second_name_user": "User",
+        "first_lastname_user": "Example",
+        "second_lastname_user": "Example2",
+        "birth_date_user": "2025-11-27",
+        "gender_user": "Other",
+        "phone_number_user": "+123456789",
+        "document_number_user": "ABC123",
+        "id_user": "string"
     }
 
 @pytest.fixture
@@ -98,13 +120,13 @@ def admin_auth_headers(client, test_admin_user, test_user_info):
             "username": test_admin_user["email"].split('@')[0],
             "email": test_admin_user["email"],
             "password": test_admin_user["password"],
-            "rol_user": test_admin_user["role"]
+            "rol_user": test_admin_user["rol_user"]
         },
         "user_information": test_user_info
     }
     
     # Registrar el usuario administrador
-    response = client.post("/auth/register", json=admin_data)
+    response = client.post("http://127.0.0.1:8000/auth/register", json=admin_data)
     
     # Si el usuario ya existe, intentar hacer login
     if response.status_code != status.HTTP_201_CREATED:
@@ -120,7 +142,7 @@ def admin_auth_headers(client, test_admin_user, test_user_info):
         }
     
     # Iniciar sesión
-    response = client.post("/auth/login", json=login_data)
+    response = client.post("http://127.0.0.1:8000/auth/login", json=login_data)
     assert response.status_code == status.HTTP_200_OK
     token = response.json()["access_token"]
     return {"Authorization": f"Bearer {token}"}

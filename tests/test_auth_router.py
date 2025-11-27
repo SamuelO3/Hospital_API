@@ -23,10 +23,10 @@ def test_register_user(client, test_user, test_user_info):
     # Crear la estructura de datos esperada por la API
     user_data = {
         "user": {
-            "username": test_user["user"]["username"].split('@')[0],
-            "email": test_user["user"]["email"],
-            "password": test_user["user"]["password"],
-            "rol_user": test_user["user"]["rol_user"]
+            "username": test_user["username"],
+            "email": test_user["email"],
+            "rol_user": test_user["rol_user"],
+            "password": test_user["password"]
         },
         "user_information": test_user_info
     }
@@ -47,10 +47,10 @@ def test_login_success(client, test_user, test_user_info):
     # Primero registrar un usuario
     user_data = {
         "user": {
-            "username": test_user["email"].split('@')[0],
+            "username": test_user["username"],
             "email": test_user["email"],
-            "password": test_user["password"],
-            "rol_user": test_user["role"]
+            "rol_user": test_user["rol_user"],
+            "password": test_user["password"]
         },
         "user_information": test_user_info
     }
@@ -77,10 +77,10 @@ def test_login_invalid_credentials(client, test_user, test_user_info):
     # Primero registrar un usuario
     user_data = {
         "user": {
-            "username": test_user["email"].split('@')[0],
+            "username": test_user["username"],
             "email": test_user["email"],
-            "password": test_user["password"],
-            "rol_user": test_user["role"]
+            "rol_user": test_user["rol_user"],
+            "password": test_user["password"]
         },
         "user_information": test_user_info
     }
@@ -111,10 +111,10 @@ def test_register_duplicate_email(client, test_user, test_user_info):
     # Crear datos de usuario con la estructura correcta
     user_data = {
         "user": {
-            "username": test_user["user"]["email"].split('@')[0],
-            "email": test_user["user"]["email"],
-            "password": test_user["user"]["password"],
-            "rol_user": test_user["user"]["rol_user"]
+            "username": test_user["username"],
+            "email": test_user["email"],
+            "rol_user": test_user["rol_user"],
+            "password": test_user["password"]
         },
         "user_information": test_user_info
     }
@@ -136,10 +136,10 @@ def auth_headers(client, test_user, test_user_info):
     # Registrar usuario
     user_data = {
         "user": {
-            "username": test_user["user"]["email"].split('@')[0],
-            "email": test_user["user"]["email"],
-            "password": test_user["user"]["password"],
-            "rol_user": test_user["user"]["rol_user"]
+            "username": test_user["username"],
+            "email": test_user["email"],
+            "rol_user": test_user["rol_user"],
+            "password": test_user["password"]
         },
         "user_information": test_user_info
     }

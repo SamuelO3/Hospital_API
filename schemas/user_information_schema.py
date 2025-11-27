@@ -7,18 +7,18 @@ from datetime import date, datetime
 
 
 class UserInformationBase(BaseModel):
-    first_name_user: str
-    second_name_user: Optional[str] = None
-    first_lastname_user: str
+    first_name_user: Optional[str]    = None
+    second_name_user: Optional[str]     = None
+    first_lastname_user: Optional[str]    = None
     second_lastname_user: Optional[str] = None
-    birth_date_user: date
-    gender_user: str
-    phone_number_user: str
-    document_number_user: str
+    birth_date_user: Optional[date]   = None
+    gender_user: Optional[str]    = None
+    phone_number_user: Optional[str]    = None
+    document_number_user: Optional[str] = None
 
 
 class UserInformationCreate(UserInformationBase):
-    id_user: str
+    id_user: UUID | None = None
 
 
 class UserInformationUpdate(UserInformationBase):
