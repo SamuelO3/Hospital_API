@@ -1,5 +1,5 @@
 from datetime import datetime
-from uuid import uuid4
+from uuid import UUID, uuid4
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 
@@ -49,9 +49,11 @@ def get_patient_by_id(db: Session, id_patient: str):
     """
 
     try:
+        patient_uuid = UUID(id_patient) if isinstance(id_patient, str) else id_patient
+
         db_patient = (
             db.query(Patient_model)
-            .filter(Patient_model.id_patient == id_patient)
+            .filter(Patient_model.id_patient == patient_uuid)
             .first()
         )
 
