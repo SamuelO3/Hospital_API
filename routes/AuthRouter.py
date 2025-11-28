@@ -21,7 +21,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
 
 
 
-@router.post("/login")
+@router.post("/login", status_code=status.HTTP_200_OK)
 async def login(login: LoginRequest, db: SessionLocal = Depends(get_db)):
 
     """
@@ -75,7 +75,7 @@ async def login(login: LoginRequest, db: SessionLocal = Depends(get_db)):
 
 
 
-@router.post("/register")
+@router.post("/register", status_code=status.HTTP_201_CREATED)
 async def register(
     user: UserCreate,
     user_information: UserInformationCreate,
@@ -115,7 +115,10 @@ async def register(
         user_information.id_user = db_user.id_user
         db_user_information = create_user_information(db, user_information)
 
-        return UserResponse.from_orm(db_user), db_user_information
+        return {
+            "user": UserResponse.from_orm(db_user),
+            "user_information": db_user_information
+        }
 
     except HTTPException as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))

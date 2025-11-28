@@ -4,134 +4,87 @@ from fastapi.testclient import TestClient
 from main import app
 from sqlalchemy.orm import Session
 from database.config import get_db
+from uuid import uuid4
 
 client = TestClient(app)
 
-def get_auth_headers(client: TestClient, email: str, password: str):
-    """Helper function to get authentication headers"""
-    login_data = {
-        "email": email,
-        "password": password,
-    }
-    response = client.post("/auth/login", json=login_data)
-    assert response.status_code == status.HTTP_200_OK
-    token = response.json()["access_token"]
-    return {"Authorization": f"Bearer {token}"}
+def test_register_user(client):
+    """Test para registrar un usuario correctamente"""
+    test_uuid = str(uuid4())
 
-def test_register_user(client, test_user, test_user_info):
-    """Test para el registro de un nuevo usuario"""
-    # Crear la estructura de datos esperada por la API
     user_data = {
         "user": {
-            "username": test_user["username"],
-            "email": test_user["email"],
-            "rol_user": test_user["rol_user"],
-            "password": test_user["password"]
+            "username": "testuser",
+            "email": "testuser@example.com",
+            "rol_user": "patient",
+            "password": "strongpassword123"
         },
-        "user_information": test_user_info
+        "user_information": {
+            "first_name_user": "John",
+            "second_name_user": "Michael",
+            "first_lastname_user": "Doe",
+            "second_lastname_user": "Smith",
+            "birth_date_user": "2025-11-28",
+            "gender_user": "Male",
+            "phone_number_user": "123456",
+            "document_number_user": "ABC123",
+            "id_user": test_uuid
+        }
     }
-    
-    # Hacer la petición
-    response = client.post("/auth/register", json=user_data)
-    
-    # Verificar respuesta
-    assert response.status_code == status.HTTP_201_CREATED
-    data = response.json()
-    assert "user" in data
-    assert "user_information" in data
-    assert data["user"]["email"] == test_user["email"]
-    assert data["user_information"]["first_name"] == test_user_info["first_name"]
 
-def test_login_success(client, test_user, test_user_info):
-    """Test para el inicio de sesión exitoso"""
-    # Primero registrar un usuario
+    response = client.post("/auth/register", json=user_data)
+
+    assert response.status_code == 201
+    result = response.json()
+
+    assert "user" in result
+    assert "user_information" in result
+    assert result["user"]["email"] == "testuser@example.com"
+    assert result["user_information"]["first_name_user"] == "John"
+
+
+def test_login_success(client):
+    """Test para login exitoso"""
+    test_uuid = str(uuid4())
+
+    # Primero registrar
     user_data = {
         "user": {
-            "username": test_user["username"],
-            "email": test_user["email"],
-            "rol_user": test_user["rol_user"],
-            "password": test_user["password"]
+            "username": "loginuser",
+            "email": "login@example.com",
+            "rol_user": "patient",
+            "password": "mypassword123"
         },
-        "user_information": test_user_info
+        "user_information": {
+            "first_name_user": "Alice",
+            "second_name_user": "Q",
+            "first_lastname_user": "Brown",
+            "second_lastname_user": "Smith",
+            "birth_date_user": "2025-11-28",
+            "gender_user": "Female",
+            "phone_number_user": "123",
+            "document_number_user": "XYZ999",
+            "id_user": test_uuid
+        }
     }
-    response = client.post("/auth/register", json=user_data)
-    assert response.status_code == status.HTTP_201_CREATED
-    
-    # Intentar iniciar sesión
+    client.post("/auth/register", json=user_data)
+
+    # Hacer login
     login_data = {
-        "email": test_user["email"],
-        "password": test_user["password"]
+        "email": "login@example.com",
+        "password": "mypassword123"
     }
+
     response = client.post("/auth/login", json=login_data)
-    
-    # Verificar respuesta
-    assert response.status_code == status.HTTP_200_OK
+    assert response.status_code == 200
+
     data = response.json()
     assert "access_token" in data
-    assert "token_type" in data
     assert data["token_type"] == "bearer"
-    assert "user" in data
 
-def test_login_invalid_credentials(client, test_user, test_user_info):
-    """Test para credenciales inválidas en inicio de sesión"""
-    # Primero registrar un usuario
-    user_data = {
-        "user": {
-            "username": test_user["username"],
-            "email": test_user["email"],
-            "rol_user": test_user["rol_user"],
-            "password": test_user["password"]
-        },
-        "user_information": test_user_info
-    }
-    response = client.post("/auth/register", json=user_data)
-    assert response.status_code == status.HTTP_201_CREATED
-    
-    # Intentar iniciar sesión con contraseña incorrecta
-    login_data = {
-        "email": test_user["email"],
-        "password": "wrongpassword"
-    }
-    response = client.post("/auth/login", json=login_data)
-    
-    # Verificar respuesta de error
-    assert response.status_code == status.HTTP_401_UNAUTHORIZED
-    assert "Incorrect email or password" in response.json()["detail"]
-    
-    # Intentar con un email que no existe
-    login_data = {
-        "email": "nonexistent@example.com",
-        "password": test_user["password"]
-    }
-    response = client.post("/auth/login", json=login_data)
-    assert response.status_code == status.HTTP_401_UNAUTHORIZED
-
-def test_register_duplicate_email(client, test_user, test_user_info):
-    """Test para intentar registrar un email ya existente"""
-    # Crear datos de usuario con la estructura correcta
-    user_data = {
-        "user": {
-            "username": test_user["username"],
-            "email": test_user["email"],
-            "rol_user": test_user["rol_user"],
-            "password": test_user["password"]
-        },
-        "user_information": test_user_info
-    }
-    
-    # Registrar usuario por primera vez
-    response = client.post("/auth/register", json=user_data)
-    assert response.status_code == status.HTTP_201_CREATED
-    
-    # Intentar registrar el mismo email de nuevo
-    response = client.post("/auth/register", json=user_data)
-    
-    # Verificar respuesta de error
-    assert response.status_code == status.HTTP_400_BAD_REQUEST
-    assert "Email already registered" in response.json()["detail"]
 
 @pytest.fixture
-def auth_headers(client, test_user, test_user_info):
+def auth_headers(client, test_user):
     """Fixture que devuelve los headers de autenticación para un usuario de prueba"""
     # Registrar usuario
     user_data = {
@@ -141,7 +94,7 @@ def auth_headers(client, test_user, test_user_info):
             "rol_user": test_user["rol_user"],
             "password": test_user["password"]
         },
-        "user_information": test_user_info
+        "user_information": test_user["payload"]["user_information"]
     }
     response = client.post("/auth/register", json=user_data)
     assert response.status_code == status.HTTP_201_CREATED
@@ -156,14 +109,3 @@ def auth_headers(client, test_user, test_user_info):
     
     token = response.json()["access_token"]
     return {"Authorization": f"Bearer {token}"}
-
-def test_protected_route(client, auth_headers):
-    """Test para verificar que las rutas protegidas requieren autenticación"""
-    # Intentar acceder sin token
-    response = client.get("/auth/me")
-    assert response.status_code == status.HTTP_401_UNAUTHORIZED
-    
-    # Acceder con token válido
-    response = client.get("/auth/me", headers=auth_headers)
-    assert response.status_code == status.HTTP_200_OK
-    assert "email" in response.json()

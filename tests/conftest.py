@@ -4,6 +4,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
 from fastapi import status
+from uuid import uuid4
 
 from main import app
 from database.config import Base, get_db
@@ -39,6 +40,7 @@ def client():
 # Fixtures para datos de prueba
 @pytest.fixture
 def test_user():
+    test_uuid = str(uuid4())
     payload= {
         "user": {
             "username": "test",
@@ -55,7 +57,7 @@ def test_user():
             "gender_user": "test",
             "phone_number_user": "string",
             "document_number_user": "string",
-            "id_user": "string"
+            "id_user": test_uuid
         }
     }
     user_flat = {
@@ -69,6 +71,7 @@ def test_user():
 
 @pytest.fixture
 def test_admin_user():
+    test_uuid = str(uuid4())
     payload= {
         "user": {
             "username": "admin",
@@ -85,7 +88,7 @@ def test_admin_user():
             "gender_user": "test",
             "phone_number_user": "string",
             "document_number_user": "string",
-            "id_user": "string"
+            "id_user": test_uuid
         }
     }
     admin_flat = {
@@ -99,6 +102,7 @@ def test_admin_user():
 
 @pytest.fixture
 def test_user_info():
+    test_uuid = str(uuid4())
     return {
         "first_name_user": "Test",
         "second_name_user": "User",
@@ -108,41 +112,38 @@ def test_user_info():
         "gender_user": "Other",
         "phone_number_user": "+123456789",
         "document_number_user": "ABC123",
-        "id_user": "string"
+        "id_user": test_uuid
     }
 
 @pytest.fixture
-def admin_auth_headers(client, test_admin_user, test_user_info):
-    """Fixture que devuelve los headers de autenticación para un usuario administrador"""
-    # Crear la estructura de datos esperada por la API
+def admin_auth_headers(client, test_admin_user):
     admin_data = {
         "user": {
-            "username": test_admin_user["email"].split('@')[0],
+            "username": test_admin_user["username"],
             "email": test_admin_user["email"],
             "password": test_admin_user["password"],
             "rol_user": test_admin_user["rol_user"]
         },
-        "user_information": test_user_info
+        "user_information": test_admin_user["payload"]["user_information"]
     }
-    
-    # Registrar el usuario administrador
-    response = client.post("http://127.0.0.1:8000/auth/register", json=admin_data)
-    
-    # Si el usuario ya existe, intentar hacer login
-    if response.status_code != status.HTTP_201_CREATED:
-        login_data = {
-            "email": test_admin_user["email"],
-            "password": test_admin_user["password"]
-        }
-    else:
-        # Hacer login con el usuario recién creado
-        login_data = {
-            "email": test_admin_user["email"],
-            "password": test_admin_user["password"]
-        }
-    
-    # Iniciar sesión
-    response = client.post("http://127.0.0.1:8000/auth/login", json=login_data)
+
+    # Registrar
+    response = client.post("/auth/register", json=admin_data)
+
+    # Hacer login
+    login_data = {
+        "email": test_admin_user["email"],
+        "password": test_admin_user["password"]
+    }
+
+    response = client.post("/auth/login", json=login_data)
     assert response.status_code == status.HTTP_200_OK
+    
     token = response.json()["access_token"]
     return {"Authorization": f"Bearer {token}"}
+    
+#     # Iniciar sesión
+#     response = client.post("http://127.0.0.1:8000/auth/login", json=login_data)
+#     assert response.status_code == status.HTTP_200_OK
+#     token = response.json()["access_token"]
+#     return {"Authorization": f"Bearer {token}"}
