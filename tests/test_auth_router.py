@@ -36,6 +36,7 @@ def test_register_user(client):
 
     assert response.status_code == 201
     result = response.json()
+    print(f"info: {result}")
 
     assert "user" in result
     assert "user_information" in result
