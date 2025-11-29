@@ -57,5 +57,5 @@ app.include_router(diagnosisRouter.router)
 app.include_router(MedicalAppointmentRouter.router)
 app.include_router(billRouter.router)
 app.include_router(nurseRouter.router)
-
+print([route.path for route in app.routes])
 get_db()

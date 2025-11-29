@@ -24,7 +24,7 @@ def create_nurse(db: Session, nurse: nurse_schema):
         db_user_information: informacion del usuario creada en la db
     """
     new_nurse = Nurse(
-        specialty=nurse.speciality,
+        speciality=nurse.speciality,
         id_user_information=nurse.id_user_information,
     )
 
