@@ -4,12 +4,11 @@ from routes import (
     MedicRouter,
     billRouter,
     diagnosisRouter,
-    NurseRouter,
+    nurseRouter,
     patientRouter,
-    medical_appointmentRouter,
-    UserRouter,
+    MedicalAppointmentRouter,
 )
-from database.config import get_db, create_tables
+from database.config import get_db
 from fastapi.middleware.cors import CORSMiddleware
 
 
@@ -53,11 +52,10 @@ app.add_middleware(
 
 app.include_router(AuthRouter.router)
 app.include_router(MedicRouter.router)
-
 app.include_router(patientRouter.router)
 app.include_router(diagnosisRouter.router)
-app.include_router(medical_appointmentRouter.router)
+app.include_router(MedicalAppointmentRouter.router)
 app.include_router(billRouter.router)
-app.include_router(NurseRouter.router)
-app.include_router(UserRouter.router)
+app.include_router(nurseRouter.router)
+print([route.path for route in app.routes])
 get_db()

@@ -27,7 +27,7 @@ class PatientCreate(PatientBase):
     Schema de paciente para crear un nuevo paciente
     """
 
-    id_user_information: str
+    id_user_information: UUID
     pass
 
 

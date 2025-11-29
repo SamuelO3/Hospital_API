@@ -20,11 +20,16 @@ router = APIRouter(prefix="/auth", tags=["Auth"])
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
 
 
-@router.post("/login")
+
+@router.post("/login", status_code=status.HTTP_200_OK)
 async def login(login: LoginRequest, db: SessionLocal = Depends(get_db)):
+
     """
     Endpoint que autentica a un usuario y genera un token de acceso JWT.
 
+    Args:
+        login: Credenciales del usuario (correo electrónico y contraseña).
+        db: Sesión de base de datos.
     Args:
         login: Credenciales del usuario (correo electrónico y contraseña).
         db: Sesión de base de datos.
@@ -32,13 +37,19 @@ async def login(login: LoginRequest, db: SessionLocal = Depends(get_db)):
     Usa:
         autheticate_user: Función que valida las credenciales del usuario.
         create_token_user: Función que genera el token JWT para el usuario autenticado.
+    Usa:
+        autheticate_user: Función que valida las credenciales del usuario.
+        create_token_user: Función que genera el token JWT para el usuario autenticado.
 
+    Roles permitidos:
+        Público (no requiere autenticación previa).
     Roles permitidos:
         Público (no requiere autenticación previa).
 
     Returns:
         LoginResponse: Objeto que contiene el token de acceso, su tipo y la información básica del usuario autenticado.
     """
+
     try:
         user = autheticate_user(db, login.email, login.password)
         if not user:
@@ -47,7 +58,6 @@ async def login(login: LoginRequest, db: SessionLocal = Depends(get_db)):
                 detail="Invalid credentials",
                 headers={"WWW-Authenticate": "Bearer"},
             )
-        # access_token_expires = timedelta(minutes=ACCES_TOKEN_EXPIRES_TIME)
         access_token = create_token_user(user)
         return LoginResponse(
             access_token=access_token,
@@ -64,15 +74,21 @@ async def login(login: LoginRequest, db: SessionLocal = Depends(get_db)):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=str(e))
 
 
-@router.post("/register")
+
+@router.post("/register", status_code=status.HTTP_201_CREATED)
 async def register(
     user: UserCreate,
     user_information: UserInformationCreate,
     db: SessionLocal = Depends(get_db),
-) -> JSONResponse:
+):
+
     """
     Endpoint que registra un nuevo usuario y su información asociada en la base de datos.
 
+    Args:
+        user: Datos de autenticación del usuario (credenciales y rol).
+        user_information: Datos personales del usuario (información adicional).
+        db: Sesión de base de datos.
     Args:
         user: Datos de autenticación del usuario (credenciales y rol).
         user_information: Datos personales del usuario (información adicional).
@@ -81,12 +97,17 @@ async def register(
     Usa:
         create_user: Función que registra al usuario en la base de datos.
         create_user_information: Función que guarda la información personal del usuario.
+    Usa:
+        create_user: Función que registra al usuario en la base de datos.
+        create_user_information: Función que guarda la información personal del usuario.
 
+    Roles permitidos:
+        Público (no requiere autenticación previa).
     Roles permitidos:
         Público (no requiere autenticación previa).
 
     Returns:
-        UserResponse, db_user_information: Objetos con la información del usuario y su información asociada creados exitosamente.
+        UserResponse, UserInformation: Objetos con la información del usuario y su información asociada creados exitosamente.
     """
 
     try:
@@ -94,7 +115,10 @@ async def register(
         user_information.id_user = db_user.id_user
         db_user_information = create_user_information(db, user_information)
 
-        return UserResponse.from_orm(db_user), db_user_information
+        return {
+            "user": UserResponse.from_orm(db_user),
+            "user_information": db_user_information
+        }
 
     except HTTPException as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))

@@ -39,6 +39,8 @@ def create_diagnosis(diagnosis: DiagnosisCreate, db: Session = Depends(get_db)):
     try:
         db_diagnosis = create_diagnosis_controller(diagnosis, db)
         return db_diagnosis
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=e)
 
@@ -65,6 +67,8 @@ def get_all_diagnosis(db: Session = Depends(get_db), skip: int = 0, limit: int =
     try:
         list_db_diagnosis = get_all_diagnosis_controller(db, skip, limit)
         return list_db_diagnosis
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=e)
 
@@ -90,6 +94,8 @@ def get_diagnosis(id_diagnosis: str, db: Session = Depends(get_db)):
     try:
         db_diagnosis = get_diagnosis_by_id_controller(id_diagnosis, db)
         return db_diagnosis
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=e)
 
@@ -121,6 +127,8 @@ def update_diagnosis(
     try:
         db_diagnosis = update_diagnosis_controller(id_diagnosis, update_info, db)
         return db_diagnosis
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=e)
 
@@ -153,5 +161,7 @@ def delete_diagnosis(id_diagnosis: str, db: Session = Depends(get_db)):
         return JSONResponse(
             content={"Response": response}, status_code=status.HTTP_200_OK
         )
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=e)

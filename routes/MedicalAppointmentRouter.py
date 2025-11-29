@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 from uuid import UUID
 from database.config import get_db
@@ -24,6 +24,7 @@ router = APIRouter(prefix="/medical_appointment", tags=["Medical Appointments"])
 @router.get(
     "/{id_medical_appointment}",
     dependencies=[Depends(require_role(["admin", "medic"]))],
+    status_code=status.HTTP_200_OK
 )
 def get_medical_appointment_by_id_route(
     id_medical_appointment: UUID, db: Session = Depends(get_db)
@@ -49,6 +50,7 @@ def get_medical_appointment_by_id_route(
     "/",
     response_model=MedicalAppointment_schema,
     dependencies=[Depends(require_role(["admin", "medic"]))],
+    status_code=status.HTTP_201_CREATED
 )
 def create_medical_appointment_route(
     medical_appointment: MedicalAppointmentCreate, db: Session = Depends(get_db)
@@ -75,6 +77,7 @@ def create_medical_appointment_route(
     "/all/",
     response_model=list[MedicalAppointment_schema],
     dependencies=[Depends(require_role(["admin", "medic"]))],
+    status_code=status.HTTP_200_OK
 )
 def get_all_medical_appointments_route(db: Session = Depends(get_db)):
     """
@@ -96,6 +99,7 @@ def get_all_medical_appointments_route(db: Session = Depends(get_db)):
 @router.put(
     "/{id_medical_appointment}",
     dependencies=[Depends(require_role(["admin", "medic"]))],
+    status_code=status.HTTP_200_OK
 )
 def update_medical_appointment_route(
     id_medical_appointment: UUID,
@@ -123,6 +127,7 @@ def update_medical_appointment_route(
 @router.delete(
     "/{id_medical_appointment}",
     dependencies=[Depends(require_role(["admin", "medic"]))],
+    status_code=status.HTTP_200_OK
 )
 def delete_medical_appointment_route(
     id_medical_appointment: UUID, db: Session = Depends(get_db)

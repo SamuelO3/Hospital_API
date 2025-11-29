@@ -25,6 +25,9 @@ def create_user_information(
         db_user_information: informacion del usuario creada en la db
     """
 
+    if isinstance(information.id_user, str):
+        information.id_user = UUID(information.id_user)
+
     exist_information = get_information_by_document_number(
         db, information.document_number_user
     )
@@ -38,10 +41,10 @@ def create_user_information(
         first_lastname_user=information.first_lastname_user,
         second_lastname_user=information.second_lastname_user,
         birth_date_user=information.birth_date_user,
-        gender_user=information.second_name_user,
+        gender_user=information.gender_user,
         phone_number_user=information.phone_number_user,
         document_number_user=information.document_number_user,
-        id_user=str(information.id_user),
+        id_user=information.id_user,
     )
 
     db.add(db_user_information)
