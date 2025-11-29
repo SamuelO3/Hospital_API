@@ -57,6 +57,7 @@ def medic_user(client):
         "password": "password123"
     }
 
+@pytest.fixture
 def test_create_medic(client, medic_user, admin_auth_headers):
     """
     Prueba crear un médico usando un usuario con rol MEDIC
@@ -75,6 +76,8 @@ def test_create_medic(client, medic_user, admin_auth_headers):
 
     assert data["specialty"] == "Cardiology"
     assert data["id_user_information"] == medic_user["id_user_information"]
+
+    return data
 
 
 def test_get_medics(client, admin_auth_headers):
