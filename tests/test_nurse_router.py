@@ -56,7 +56,7 @@ def nurse_user(client):
         "password": "password123"
     }
 
-
+@pytest.fixture
 def test_create_nurse(client, nurse_user, admin_auth_headers):
     """
     Prueba crear una enfermera usando un usuario registrado

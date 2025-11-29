@@ -12,53 +12,11 @@ def client():
     return TestClient(app)
 
 
-@pytest.fixture
-def patient_user(client):
-    """
-    Registra un usuario y devuelve:
-    - id_user
-    - id_user_information
-    - email
-    - password
-    """
-    uid = str(uuid4())
-
-    user_payload = {
-        "user": {
-            "username": f"patient_{uid}",
-            "email": f"patient_{uid}@example.com",
-            "rol_user": "user",
-            "password": "password123",
-        },
-        "user_information": {
-            "first_name_user": "Test",
-            "second_name_user": "Patient",
-            "first_lastname_user": "User",
-            "second_lastname_user": "Role",
-            "birth_date_user": "2025-11-28",
-            "gender_user": "Male",
-            "phone_number_user": "000111",
-            "document_number_user": f"DOC999patient{uid}",
-            "id_user": uid,
-        },
-    }
-
-    r = client.post("/auth/register", json=user_payload)
-    assert r.status_code == status.HTTP_201_CREATED
-
-    data = r.json()
-
-    return {
-        "id_user": data["user"]["id_user"],
-        "id_user_information": data["user_information"]["id_user_information"],
-        "email": data["user"]["email"],
-        "password": "password123",
-    }
 
 
 # ==================== TESTS CREATE PATIENT ====================
 
-
+@pytest.fixture
 def test_create_patient(client, patient_user, admin_auth_headers):
     """
     Prueba crear un paciente usando un usuario con rol PATIENT
@@ -75,6 +33,7 @@ def test_create_patient(client, patient_user, admin_auth_headers):
     assert data["blood_type"] == "O+"
     assert data["id_user_information"] == patient_user["id_user_information"]
     assert "id_patient" in data
+    return data
 
 
 def test_create_patient_duplicate_user_info_fails(

@@ -26,7 +26,7 @@ def create_test_diagnosis_data():
 
 # ==================== TESTS CREATE DIAGNOSIS ====================
 
-
+@pytest.fixture
 def test_create_diagnosis(client, admin_auth_headers):
     """
     Prueba crear un diagnóstico

@@ -152,6 +152,134 @@ def admin_auth_headers(client, test_admin_user):
     return {"Authorization": f"Bearer {token}"}
 
 
+@pytest.fixture
+def nurse_user(client):
+    """
+    Registra un usuario y devuelve:
+    - id_user
+    - id_user_information
+    """
+
+    uid = str(uuid4())
+
+    user_payload = {
+        "user": {
+            "username": f"user_{uid}",
+            "email": f"user_{uid}@example.com",
+            "rol_user": "nurse",  # o 'medic', según cómo lo manejes en tu sistema
+            "password": "password123"
+        },
+        "user_information": {
+            "first_name_user": "Test",
+            "second_name_user": "Nurse",
+            "first_lastname_user": "User",
+            "second_lastname_user": "Role",
+            "birth_date_user": "2025-11-28",
+            "gender_user": "Male",
+            "phone_number_user": "000111",
+            "document_number_user": f"DOC999nurse{uid}",
+            "id_user": uid
+        }
+    }
+
+    r = client.post("/auth/register", json=user_payload)
+    assert r.status_code == status.HTTP_201_CREATED
+
+    data = r.json()
+
+    return {
+        "id_user": data["user"]["id_user"],
+        "id_user_information": data["user_information"]["id_user_information"],
+        "email": data["user"]["email"],
+        "password": "password123"
+    }
+
+
+@pytest.fixture
+def medic_user(client):
+    """
+    Registra un usuario y devuelve:
+    - id_user
+    - id_user_information
+    """
+    uid = str(uuid4())
+
+    user_payload = {
+        "user": {
+            "username": f"user_{uid}",
+            "email": f"user_{uid}@example.com",
+            "rol_user": "medic",
+            "password": "password123"
+        },
+        "user_information": {
+            "first_name_user": "Test",
+            "second_name_user": "Medic",
+            "first_lastname_user": "User",
+            "second_lastname_user": "Role",
+            "birth_date_user": "2025-11-28",
+            "gender_user": "Male",
+            "phone_number_user": "000111",
+            "document_number_user": f"DOC999medic{uid}",
+            "id_user": uid
+        }
+    }
+
+    r = client.post("/auth/register", json=user_payload)
+    assert r.status_code == 201
+
+    data = r.json()
+
+    return {
+        "id_user": data["user"]["id_user"],
+        "id_user_information": data["user_information"]["id_user_information"],
+        "email": data["user"]["email"],
+        "password": "password123"
+    }
+
+
+@pytest.fixture
+def patient_user(client):
+    """
+    Registra un usuario y devuelve:
+    - id_user
+    - id_user_information
+    - email
+    - password
+    """
+    uid = str(uuid4())
+
+    user_payload = {
+        "user": {
+            "username": f"patient_{uid}",
+            "email": f"patient_{uid}@example.com",
+            "rol_user": "user",
+            "password": "password123",
+        },
+        "user_information": {
+            "first_name_user": "Test",
+            "second_name_user": "Patient",
+            "first_lastname_user": "User",
+            "second_lastname_user": "Role",
+            "birth_date_user": "2025-11-28",
+            "gender_user": "Male",
+            "phone_number_user": "000111",
+            "document_number_user": f"DOC999patient{uid}",
+            "id_user": uid,
+        },
+    }
+
+    r = client.post("/auth/register", json=user_payload)
+    assert r.status_code == status.HTTP_201_CREATED
+
+    data = r.json()
+
+    return {
+        "id_user": data["user"]["id_user"],
+        "id_user_information": data["user_information"]["id_user_information"],
+        "email": data["user"]["email"],
+        "password": "password123",
+    }
+
 #     # Iniciar sesión
 #     response = client.post("http:/d/127.0.0.1:8000/auth/login", json=login_data)
 #     assert response.status_code == status.HTTP_200_OK
