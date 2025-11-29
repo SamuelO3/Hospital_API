@@ -21,7 +21,7 @@ def get_nurses(db: Session = Depends(get_db)):
     return db.query(Nurse).all()
 
 
-@router.post("/", dependencies=[Depends(require_role("admin"))])
+@router.post("/", dependencies=[Depends(require_role("admin"))], status_code=status.HTTP_201_CREATED)
 def create_nurse(nurse: NurseCreate, db: Session = Depends(get_db)):
     """
 
@@ -42,16 +42,16 @@ def create_nurse(nurse: NurseCreate, db: Session = Depends(get_db)):
     return create_nurse_controller(db, nurse)
 
 
-@router.delete("delete/{nurse_id}", dependencies=[Depends(require_role("admin"))])
+@router.delete("/delete/{nurse_id}", dependencies=[Depends(require_role("admin"))])
 def remove_nurse(nurse_id: UUID, db: Session = Depends(get_db)):
     return delete_nurse_controller(db, nurse_id)
 
 
-@router.get("byid/{nurse_id}", dependencies=[Depends(require_role("admin"))])
+@router.get("/byid/{nurse_id}", dependencies=[Depends(require_role("admin"))])
 def getbyid_nurse(nurse_id: UUID, db: Session = Depends(get_db)):
     return get_nurse_by_id_controller(db, nurse_id)
 
 
-@router.put("update/{nurse_id}", dependencies=[Depends(require_role("admin"))])
+@router.put("/update/{nurse_id}", dependencies=[Depends(require_role("admin"))])
 def update_nurse1(nurse_id: UUID, body: NurseUpdate, db: Session = Depends(get_db)):
     return update_nurse_controller(db, nurse_id, body)

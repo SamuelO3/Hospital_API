@@ -139,13 +139,12 @@ def update_bill(id_bill: str, update_info: BillUpdate, db: Session = Depends(get
         db_bill = update_bill_controller(id_bill, update_info, db)
         return db_bill
     except Exception as e:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST0, detail=e)
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=e)
 
 
 @router.delete(
     "/delete/{id_bill}",
     dependencies=[Depends(require_role(["admin", "nurse"]))],
-    response_model=Bill,
 )
 def delete_bill(id_bill: str, db: Session = Depends(get_db)):
     """
