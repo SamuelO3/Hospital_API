@@ -153,7 +153,7 @@ def admin_auth_headers(client, test_admin_user):
 
 
 #     # Iniciar sesión
-#     response = client.post("http://127.0.0.1:8000/auth/login", json=login_data)
+#     response = client.post("http:/d/127.0.0.1:8000/auth/login", json=login_data)
 #     assert response.status_code == status.HTTP_200_OK
 #     token = response.json()["access_token"]
 #     return {"Authorization": f"Bearer {token}"}

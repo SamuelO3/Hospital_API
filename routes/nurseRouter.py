@@ -3,7 +3,7 @@ from models.nurse import Nurse
 from database.config import get_db
 from sqlalchemy.orm import Session
 from utils.role_utils import require_role
-from controllers.Nurse_Controller import (
+from controllers.nurse_controller import (
     create_nurse as create_nurse_controller,
     get_nurse_by_id as get_nurse_by_id_controller,
     delete_nurse as delete_nurse_controller,
